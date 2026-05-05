@@ -30,11 +30,11 @@ provisioner:
   inventory:
     host_vars:
       ubuntu-userpass:
-        openbao_addr: http://openbao-userpass-server:8200
-        openbao_auth_method: userpass
-        openbao_username: testuser
-        openbao_password: testpass123
-        openbao_tls_verify: false
+        openbao_secrets_integration_bao_addr: http://openbao-userpass-server:8200
+        openbao_secrets_integration_bao_auth_method: userpass
+        openbao_secrets_integration_bao_username: testuser
+        openbao_secrets_integration_bao_password: testpass123
+        openbao_secrets_integration_bao_tls_verify: false
         openbao_secrets:
           - path: secret/data/app/config
             key: db_password

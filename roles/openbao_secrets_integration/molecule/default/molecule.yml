@@ -35,11 +35,11 @@ provisioner:
   inventory:
     host_vars:
       ubuntu-openbao:
-        openbao_addr: http://openbao-server:8200
-        openbao_auth_method: token
-        openbao_token: test-token
-        openbao_tls_verify: false
-        openbao_secrets:
+        openbao_secrets_integration_bao_addr: http://openbao-server:8200
+        openbao_secrets_integration_bao_auth_method: token
+        openbao_secrets_integration_bao_token: test-token
+        openbao_secrets_integration_bao_tls_verify: false
+        openbao_secrets_integration_bao_secrets:
           - path: secret/data/test/config
             key: password
             dest_var: test_password

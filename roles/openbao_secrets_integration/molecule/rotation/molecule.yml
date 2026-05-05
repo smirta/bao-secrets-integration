@@ -30,11 +30,11 @@ provisioner:
   inventory:
     host_vars:
       ubuntu-rotation:
-        openbao_addr: http://openbao-rotation-server:8200
-        openbao_auth_method: token
-        openbao_token: root-token
-        openbao_tls_verify: false
-        openbao_rotate_secrets: true
+        openbao_secrets_integration_bao_addr: http://openbao-rotation-server:8200
+        openbao_secrets_integration_bao_auth_method: token
+        openbao_secrets_integration_bao_token: root-token
+        openbao_secrets_integration_bao_tls_verify: false
+        openbao_secrets_integration_bao_rotate_secrets: true
         openbao_secrets:
           - path: secret/data/rotatable/password
             key: value

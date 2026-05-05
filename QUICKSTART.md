@@ -82,11 +82,11 @@ Create `playbook.yml`:
   connection: local
 
   vars:
-    openbao_addr: "http://localhost:8200"
-    openbao_auth_method: "token"
-    openbao_token: "my-root-token"
-    openbao_tls_verify: false
-    openbao_secrets:
+    openbao_secrets_integration_bao_addr: "http://localhost:8200"
+    openbao_secrets_integration_bao_auth_method: "token"
+    openbao_secrets_integration_bao_token: "my-root-token"
+    openbao_secrets_integration_bao_tls_verify: false
+    openbao_secrets_integration_bao_secrets:
       - path: "secret/data/myapp/db"
         key: "password"
         dest_var: "database_password"
@@ -128,12 +128,12 @@ ok: [localhost] => {
 **Group Variables** (`group_vars/production.yml`):
 
 ```yaml
-openbao_addr: "https://openbao.prod.example.com:8200"
-openbao_auth_method: "approle"
-openbao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
-openbao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
-openbao_tls_verify: true
-openbao_secrets:
+openbao_secrets_integration_bao_addr: "https://openbao.prod.example.com:8200"
+openbao_secrets_integration_bao_auth_method: "approle"
+openbao_secrets_integration_bao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
+openbao_secrets_integration_bao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
+openbao_secrets_integration_bao_tls_verify: true
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/prod/webapp/db"
     key: "password"
     dest_var: "prod_db_password"
@@ -193,8 +193,8 @@ ansible-playbook -i inventory/production deploy.yml
 ---
 - hosts: databases
   vars:
-    openbao_rotate_secrets: true  # Enable rotation
-    openbao_secrets:
+    openbao_secrets_integration_bao_rotate_secrets: true  # Enable rotation
+    openbao_secrets_integration_bao_secrets:
       - path: "database/creds/readonly"
         key: "password"
         dest_var: "db_ro_password"
@@ -215,30 +215,30 @@ ansible-playbook -i inventory/production deploy.yml
 ### Token (Simplest)
 
 ```yaml
-openbao_auth_method: "token"
-openbao_token: "{{ lookup('env', 'OPENBAO_TOKEN') }}"
+openbao_secrets_integration_bao_auth_method: "token"
+openbao_secrets_integration_bao_token: "{{ lookup('env', 'OPENBAO_TOKEN') }}"
 ```
 
 ### AppRole (Recommended for Automation)
 
 ```yaml
-openbao_auth_method: "approle"
-openbao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
-openbao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
+openbao_secrets_integration_bao_auth_method: "approle"
+openbao_secrets_integration_bao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
+openbao_secrets_integration_bao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
 ```
 
 ### Username/Password
 
 ```yaml
-openbao_auth_method: "userpass"
-openbao_secrets_integration_username: "ansible-user"
-openbao_secrets_integration_password: "{{ lookup('env', 'OPENBAO_PASSWORD') }}"
+openbao_secrets_integration_bao_auth_method: "userpass"
+openbao_secrets_integration_bao_username: "ansible-user"
+openbao_secrets_integration_bao_password: "{{ lookup('env', 'OPENBAO_PASSWORD') }}"
 ```
 
 ### Kubernetes (for K8s deployments)
 
 ```yaml
-openbao_auth_method: "kubernetes"
+openbao_secrets_integration_bao_auth_method: "kubernetes"
 openbao_secrets_integration_k8s_role: "my-app-role"
 ```
 
@@ -253,14 +253,14 @@ openbao_secrets_integration_k8s_role: "my-app-role"
 2. **Production Setup**: Configure TLS and proper authentication
 
    ```yaml
-   openbao_tls_verify: true
-   openbao_ca_cert: "/etc/ssl/certs/ca.crt"
+   openbao_secrets_integration_bao_tls_verify: true
+   openbao_secrets_integration_ca_cert: "/etc/ssl/certs/ca.crt"
    ```
 
 3. **Multiple Secrets**: Retrieve multiple secrets in one run
 
    ```yaml
-   openbao_secrets:
+   openbao_secrets_integration_bao_secrets:
      - path: "secret/data/app/db"
        key: "password"
        dest_var: "db_pass"

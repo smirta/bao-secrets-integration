@@ -18,9 +18,9 @@
     - name: Verify secret metadata is stored
       ansible.builtin.assert:
         that:
-          - openbao_secret_metadata is defined
-          - openbao_secret_metadata['test_password'] is defined
-          - openbao_secret_metadata['api_token'] is defined
+          - openbao_secrets_integration_bao_secret_metadata is defined
+          - openbao_secrets_integration_bao_secret_metadata['test_password'] is defined
+          - openbao_secrets_integration_bao_secret_metadata['api_token'] is defined
         fail_msg: "Secret metadata not stored correctly"
         success_msg: "Secret metadata stored correctly"
       when: "'openbao-server' not in inventory_hostname"

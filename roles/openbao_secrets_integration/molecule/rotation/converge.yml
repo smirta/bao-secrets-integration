@@ -6,19 +6,19 @@
   tasks:
     - name: Wait for OpenBao to be ready
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/sys/health"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/sys/health"
         method: GET
         validate_certs: false
         status_code: [200, 429, 472, 473, 501, 503]
-      register: health_check
+      register: openbao_secrets_integration_bao_health_check
       retries: 30
       delay: 2
-      until: health_check.status in [200, 429, 473]
+      until: openbao_secrets_integration_bao_health_check.status in [200, 429, 473]
       when: "'openbao' not in inventory_hostname"
 
     - name: Create initial secret
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/secret/data/rotatable/password"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/secret/data/rotatable/password"
         method: POST
         body_format: json
         body:
@@ -32,7 +32,7 @@
 
     - name: First run - retrieve secret
       ansible.builtin.include_role:
-        name: openbao
+        name: openbao_secrets_integration
       when: "'openbao' not in inventory_hostname"
 
     - name: Store first password value
@@ -42,7 +42,7 @@
 
     - name: Update secret (simulating rotation)
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/secret/data/rotatable/password"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/secret/data/rotatable/password"
         method: POST
         body_format: json
         body:
@@ -56,7 +56,7 @@
 
     - name: Second run - retrieve rotated secret
       ansible.builtin.include_role:
-        name: openbao
+        name: openbao_secrets_integration
       when: "'openbao' not in inventory_hostname"
 
     - name: Verify rotation worked
@@ -74,5 +74,5 @@
         msg:
           - "First password: {{ first_password }}"
           - "Rotated password: {{ rotatable_password }}"
-          - "Rotation enabled: {{ openbao_rotate_secrets }}"
+          - "Rotation enabled: {{ openbao_secrets_integration_bao_rotate_secrets }}"
       when: "'openbao' not in inventory_hostname"

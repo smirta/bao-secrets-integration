@@ -2,18 +2,18 @@
 # group_vars/development.yml
 # OpenBao configuration for development environment
 
-openbao_addr: "http://localhost:8200"
-openbao_auth_method: "token"
-openbao_tls_verify: false
+openbao_secrets_integration_bao_addr: "http://localhost:8200"
+openbao_secrets_integration_bao_auth_method: "token"
+openbao_secrets_integration_bao_tls_verify: false
 
 # No secret rotation in development
-openbao_rotate_secrets: false
+openbao_secrets_integration_bao_rotate_secrets: false
 
 # Token auth for dev (dev server root token)
-openbao_token: "{{ lookup('env', 'OPENBAO_DEV_TOKEN') | default('dev-token', true) }}"
+openbao_secrets_integration_bao_token: "{{ lookup('env', 'OPENBAO_DEV_TOKEN') | default('dev-token', true) }}"
 
 # Development secrets to retrieve
-openbao_secrets:
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/dev/webapp/database"
     key: "password"
     dest_var: "dev_db_password"
@@ -23,5 +23,5 @@ openbao_secrets:
     dest_var: "dev_api_key"
 
 # Relaxed connection settings for dev
-openbao_timeout: 10
+openbao_secrets_integration_timeout: 10
 openbao_secrets_integration_max_retries: 2

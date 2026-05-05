@@ -36,8 +36,8 @@ Complete documentation for the OpenBao Secrets Integration Ansible Role.
 Most basic authentication method using a static token.
 
 ```yaml
-openbao_auth_method: "token"
-openbao_token: "hvs.CAESIJ..."
+openbao_secrets_integration_bao_auth_method: "token"
+openbao_secrets_integration_bao_token: "hvs.CAESIJ..."
 ```
 
 **Use Cases:**
@@ -53,9 +53,9 @@ openbao_token: "hvs.CAESIJ..."
 Recommended for automated workflows and CI/CD.
 
 ```yaml
-openbao_auth_method: "approle"
-openbao_role_id: "role-id-here"
-openbao_secret_id: "secret-id-here"
+openbao_secrets_integration_bao_auth_method: "approle"
+openbao_secrets_integration_bao_role_id: "role-id-here"
+openbao_secrets_integration_bao_secret_id: "secret-id-here"
 ```
 
 **Use Cases:**
@@ -72,9 +72,9 @@ openbao_secret_id: "secret-id-here"
 Traditional username and password authentication.
 
 ```yaml
-openbao_auth_method: "userpass"
-openbao_secrets_integration_username: "myuser"
-openbao_secrets_integration_password: "mypassword"
+openbao_secrets_integration_bao_auth_method: "userpass"
+openbao_secrets_integration_bao_username: "myuser"
+openbao_secrets_integration_bao_password: "mypassword"
 ```
 
 **Use Cases:**
@@ -90,7 +90,7 @@ openbao_secrets_integration_password: "mypassword"
 For applications running in Kubernetes clusters.
 
 ```yaml
-openbao_auth_method: "kubernetes"
+openbao_secrets_integration_bao_auth_method: "kubernetes"
 openbao_secrets_integration_k8s_role: "my-role"
 ```
 
@@ -107,7 +107,7 @@ openbao_secrets_integration_k8s_role: "my-role"
 Integrate with existing LDAP/Active Directory.
 
 ```yaml
-openbao_auth_method: "ldap"
+openbao_secrets_integration_bao_auth_method: "ldap"
 openbao_secrets_integration_ldap_username: "ldapuser"
 openbao_secrets_integration_ldap_password: "ldappassword"
 ```
@@ -125,7 +125,7 @@ openbao_secrets_integration_ldap_password: "ldappassword"
 Token-based authentication using JSON Web Tokens.
 
 ```yaml
-openbao_auth_method: "jwt"
+openbao_secrets_integration_bao_auth_method: "jwt"
 openbao_secrets_integration_jwt_role: "my-jwt-role"
 openbao_secrets_integration_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
@@ -145,7 +145,7 @@ openbao_secrets_integration_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 Define secrets to retrieve:
 
 ```yaml
-openbao_secrets:
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/myapp/config"
     key: "db_password"
     dest_var: "database_password"
@@ -169,7 +169,7 @@ After the role runs, secrets are available as variables:
 Enable automatic secret rotation:
 
 ```yaml
-openbao_rotate_secrets: true
+openbao_secrets_integration_bao_rotate_secrets: true
 ```
 
 When enabled, the role will attempt to rotate secrets on each run.
@@ -181,7 +181,7 @@ When enabled, the role will attempt to rotate secrets on each run.
 The role stores metadata about retrieved secrets:
 
 ```yaml
-openbao_secret_metadata:
+openbao_secrets_integration_bao_secret_metadata:
   database_password:
     path: "secret/data/myapp/config"
     version: "3"
@@ -194,19 +194,19 @@ openbao_secret_metadata:
 
 ```yaml
 # Server address
-openbao_addr: "https://openbao.example.com:8200"
+openbao_secrets_integration_bao_addr: "https://openbao.example.com:8200"
 
 # TLS verification
-openbao_tls_verify: true
-openbao_ca_cert: "/path/to/ca.crt"
+openbao_secrets_integration_bao_tls_verify: true
+openbao_secrets_integration_ca_cert: "/path/to/ca.crt"
 
 # Timeout and retries
-openbao_timeout: 30
+openbao_secrets_integration_timeout: 30
 openbao_secrets_integration_max_retries: 3
-openbao_retry_delay: 2
+oopenbao_secrets_integration_retry_delay: 2
 
 # Namespace (Enterprise)
-openbao_namespace: "admin"
+openbao_secrets_integration_bao_namespace: "admin"
 ```
 
 #### Dependency Management
@@ -268,7 +268,7 @@ make test-integration
   roles:
     - role: openbao_secrets_integration
       vars:
-        openbao_secrets:
+        openbao_secrets_integration_bao_secrets:
           - path: "secret/data/webapp/db"
             key: "password"
             dest_var: "db_password"
@@ -288,11 +288,11 @@ make test-integration
 ---
 - hosts: databases
   vars:
-    openbao_rotate_secrets: true
+    openbao_secrets_integration_bao_rotate_secrets: true
   roles:
     - role: openbao_secrets_integration
       vars:
-        openbao_secrets:
+        openbao_secrets_integration_bao_secrets:
           - path: "database/creds/admin"
             key: "password"
             dest_var: "db_admin_pass"
@@ -309,13 +309,13 @@ make test-integration
 - hosts: localhost
   connection: local
   vars:
-    openbao_auth_method: "approle"
-    openbao_role_id: "{{ lookup('env', 'CI_ROLE_ID') }}"
-    openbao_secret_id: "{{ lookup('env', 'CI_SECRET_ID') }}"
+    openbao_secrets_integration_bao_auth_method: "approle"
+    openbao_secrets_integration_bao_role_id: "{{ lookup('env', 'CI_ROLE_ID') }}"
+    openbao_secrets_integration_bao_secret_id: "{{ lookup('env', 'CI_SECRET_ID') }}"
   roles:
     - role: openbao_secrets_integration
       vars:
-        openbao_secrets:
+        openbao_secrets_integration_bao_secrets:
           - path: "secret/data/ci/docker"
             key: "registry_token"
             dest_var: "docker_token"
@@ -344,13 +344,13 @@ make test-integration
 
 - Check network connectivity
 - Verify OpenBao address and port
-- Increase timeout: `openbao_timeout: 60`
+- Increase timeout: `openbao_secrets_integration_timeout: 60`
 - Check firewall rules
 
 #### TLS Verification Failed
 
-- For self-signed certs: `openbao_tls_verify: false` (dev only)
-- Or provide CA cert: `openbao_ca_cert: "/path/to/ca.crt"`
+- For self-signed certs: `openbao_secrets_integration_bao_tls_verify: false` (dev only)
+- Or provide CA cert: `openbao_secrets_integration_ca_cert: "/path/to/ca.crt"`
 - Ensure hostname matches certificate
 
 ### Debug Mode
@@ -366,7 +366,7 @@ Check what the role is doing:
 ```yaml
 - name: Debug mode
   debug:
-    var: openbao_secret_metadata
+    var: openbao_secrets_integration_bao_secret_metadata
 ```
 
 ### Getting Help
@@ -386,12 +386,12 @@ Check what the role is doing:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `openbao_addr` | Yes | - | OpenBao server URL |
-| `openbao_auth_method` | Yes | `token` | Authentication method |
-| `openbao_secrets` | Yes | `[]` | List of secrets to retrieve |
-| `openbao_rotate_secrets` | No | `false` | Enable secret rotation |
-| `openbao_tls_verify` | No | `true` | Verify TLS certificates |
-| `openbao_timeout` | No | `30` | Connection timeout (seconds) |
+| `openbao_secrets_integration_bao_addr` | Yes | - | OpenBao server URL |
+| `openbao_secrets_integration_bao_auth_method` | Yes | `token` | Authentication method |
+| `openbao_secrets_integration_bao_secrets` | Yes | `[]` | List of secrets to retrieve |
+| `openbao_secrets_integration_bao_rotate_secrets` | No | `false` | Enable secret rotation |
+| `openbao_secrets_integration_bao_tls_verify` | No | `true` | Verify TLS certificates |
+| `openbao_secrets_integration_timeout` | No | `30` | Connection timeout (seconds) |
 
 **See:** [defaults/main.yml](roles/openbao_secrets_integration/defaults/main.yml) for complete list
 

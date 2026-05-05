@@ -7,11 +7,11 @@
   connection: local
   gather_facts: yes
   vars:
-    openbao_addr: "http://localhost:8200"
-    openbao_auth_method: "token"
-    openbao_token: "test-root-token"
-    openbao_tls_verify: false
-    openbao_secrets:
+    openbao_secrets_integration_bao_addr: "http://localhost:8200"
+    openbao_secrets_integration_bao_auth_method: "token"
+    openbao_secrets_integration_bao_token: "test-root-token"
+    openbao_secrets_integration_bao_tls_verify: false
+    openbao_secrets_integration_bao_secrets:
       - path: "secret/data/test/app"
         key: "password"
         dest_var: "test_app_password"
@@ -19,27 +19,27 @@
   pre_tasks:
     - name: Check if OpenBao is running
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/sys/health"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/sys/health"
         method: GET
         validate_certs: false
         status_code: [200, 429, 473, 501, 503]
-      register: openbao_health
+      register: openbao_secrets_integration_bao_health
       failed_when: false
 
     - name: Skip if OpenBao not available
       ansible.builtin.meta: end_play
-      when: openbao_health.status == -1
+      when: openbao_secrets_integration_bao_health.status == -1
 
     - name: Create test secret
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/secret/data/test/app"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/secret/data/test/app"
         method: POST
         body_format: json
         body:
           data:
             password: "test-password-123"
         headers:
-          X-Vault-Token: "{{ openbao_token }}"
+          X-Vault-Token: "{{ openbao_secrets_integration_bao_token }}"
         validate_certs: false
         status_code: [200, 204]
 
@@ -60,12 +60,12 @@
   connection: local
   gather_facts: yes
   vars:
-    openbao_addr: "http://localhost:8200"
-    openbao_auth_method: "token"
-    openbao_token: "test-root-token"
-    openbao_tls_verify: false
-    openbao_rotate_secrets: true
-    openbao_secrets:
+    openbao_secrets_integration_bao_addr: "http://localhost:8200"
+    openbao_secrets_integration_bao_auth_method: "token"
+    openbao_secrets_integration_bao_token: "test-root-token"
+    openbao_secrets_integration_bao_tls_verify: false
+    openbao_secrets_integration_bao_rotate_secrets: true
+    openbao_secrets_integration_bao_secrets:
       - path: "secret/data/test/rotation"
         key: "value"
         dest_var: "rotated_value"
@@ -73,14 +73,14 @@
   pre_tasks:
     - name: Create rotation test secret
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/secret/data/test/rotation"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/secret/data/test/rotation"
         method: POST
         body_format: json
         body:
           data:
             value: "rotation-test-v1"
         headers:
-          X-Vault-Token: "{{ openbao_token }}"
+          X-Vault-Token: "{{ openbao_secrets_integration_bao_token }}"
         validate_certs: false
         status_code: [200, 204]
       failed_when: false
@@ -101,11 +101,11 @@
   connection: local
   gather_facts: yes
   vars:
-    openbao_addr: "http://localhost:8200"
-    openbao_auth_method: "token"
-    openbao_token: "test-root-token"
-    openbao_tls_verify: false
-    openbao_secrets:
+    openbao_secrets_integration_bao_addr: "http://localhost:8200"
+    openbao_secrets_integration_bao_auth_method: "token"
+    openbao_secrets_integration_bao_token: "test-root-token"
+    openbao_secrets_integration_bao_tls_verify: false
+    openbao_secrets_integration_bao_secrets:
       - path: "secret/data/test/multi1"
         key: "key1"
         dest_var: "multi_secret_1"
@@ -119,13 +119,13 @@
   pre_tasks:
     - name: Create multiple test secrets
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/{{ item.path }}"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/{{ item.path }}"
         method: POST
         body_format: json
         body:
           data: "{{ item.data }}"
         headers:
-          X-Vault-Token: "{{ openbao_token }}"
+          X-Vault-Token: "{{ openbao_secrets_integration_bao_token }}"
         validate_certs: false
         status_code: [200, 204]
       loop:

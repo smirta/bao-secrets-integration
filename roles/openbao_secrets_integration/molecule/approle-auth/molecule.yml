@@ -30,12 +30,12 @@ provisioner:
   inventory:
     host_vars:
       ubuntu-approle:
-        openbao_addr: http://openbao-approle-server:8200
-        openbao_auth_method: approle
-        openbao_role_id: test-role-id
-        openbao_secret_id: test-secret-id
-        openbao_tls_verify: false
-        openbao_secrets:
+        openbao_secrets_integration_bao_addr: http://openbao-approle-server:8200
+        openbao_secrets_integration_bao_auth_method: approle
+        openbao_secrets_integration_bao_role_id: test-role-id
+        openbao_secrets_integration_bao_secret_id: test-secret-id
+        openbao_secrets_integration_bao_tls_verify: false
+        openbao_secrets_integration_bao_secrets:
           - path: secret/data/prod/api
             key: api_key
             dest_var: production_api_key

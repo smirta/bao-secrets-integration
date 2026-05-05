@@ -1,0 +1,32 @@
+---
+# Token authentication
+
+- name: Validate token is provided
+  ansible.builtin.assert:
+    that:
+      - openbao_secrets_integration_bao_token is defined
+      - openbao_secrets_integration_bao_token | length > 0
+    fail_msg: "OpenBao token must be provided for token authentication"
+
+- name: Set OpenBao client token
+  ansible.builtin.set_fact:
+    openbao_secrets_integration_bao_client_token: "{{ openbao_secrets_integration_bao_token }}"
+    cacheable: no
+  no_log: true
+
+- name: Verify token authentication
+  ansible.builtin.uri:
+    url: "{{ openbao_secrets_integration_bao_addr }}/v1/auth/token/lookup-self"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ openbao_secrets_integration_bao_client_token }}"
+      X-Vault-Namespace: "{{ openbao_secrets_integration_bao_namespace | default(omit) }}"
+    validate_certs: "{{ openbao_secrets_integration_bao_tls_verify }}"
+    timeout: "{{ openbao_secrets_integration_timeout }}"
+    status_code: 200
+  register: openbao_secrets_integration_bao_token_lookup
+  no_log: true
+
+- name: Display token info
+  ansible.builtin.debug:
+    msg: "Successfully authenticated with token. TTL: {{ openbao_secrets_integration_bao_token_lookup.json.data.ttl | default('N/A') }}"

@@ -3,10 +3,10 @@
 
 - name: Install hvac Python library
   ansible.builtin.pip:
-    name: "hvac=={{ openbao_hvac_version }}"
+    name: "hvac=={{ openbao_secrets_integration_hvac_version }}"
     state: present
     extra_args: --user
-  register: hvac_install
-  retries: "{{ openbao_max_retries }}"
-  delay: "{{ openbao_retry_delay }}"
-  until: hvac_install is succeeded
+  register: openbao_secrets_integration_hvac_install
+  retries: "{{ openbao_secrets_integration_max_retries }}"
+  delay: "{{ openbao_secrets_integration_retry_delay }}"
+  until: openbao_secrets_integration_hvac_install is succeeded

@@ -7,14 +7,14 @@
 
   vars:
     # OpenBao configuration
-    openbao_addr: "https://openbao.example.com:8200"
-    openbao_auth_method: "approle"
-    openbao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
-    openbao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
-    openbao_rotate_secrets: false
+    openbao_secrets_integration_bao_addr: "https://openbao.example.com:8200"
+    openbao_secrets_integration_bao_auth_method: "approle"
+    openbao_secrets_integration_bao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
+    openbao_secrets_integration_bao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
+    openbao_secrets_integration_bao_rotate_secrets: false
 
     # Secrets to retrieve
-    openbao_secrets:
+    openbao_secrets_integration_bao_secrets:
       - path: "secret/data/myapp/database"
         key: "password"
         dest_var: "db_password"
@@ -49,9 +49,9 @@
   tasks:
     - name: Display secret metadata (without exposing values)
       ansible.builtin.debug:
-        msg: "Retrieved {{ openbao_secrets | length }} secrets from OpenBao"
+        msg: "Retrieved {{ openbao_secrets_integration_bao_secrets | length }} secrets from OpenBao"
 
     - name: Show secret versions
       ansible.builtin.debug:
-        var: openbao_secret_metadata
-      when: openbao_secret_metadata is defined
+        var: openbao_secrets_integration_bao_secret_metadata
+      when: openbao_secrets_integration_bao_secret_metadata is defined

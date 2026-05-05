@@ -258,7 +258,7 @@ Add new test plays to `tests/integration-test.yml`:
 - name: Test New Feature
   hosts: localhost
   vars:
-    openbao_addr: "http://localhost:8200"
+    openbao_secrets_integration_bao_addr: "http://localhost:8200"
     # ... other vars ...
 
   pre_tasks:
@@ -266,7 +266,7 @@ Add new test plays to `tests/integration-test.yml`:
       # ... setup tasks ...
 
   roles:
-    - role: openbao_secrets_integration
+    - role: openbao_secrets_integration_bao_secrets_integration
 
   post_tasks:
     - name: Verify

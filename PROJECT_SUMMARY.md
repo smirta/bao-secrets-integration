@@ -181,11 +181,11 @@ make install
     ---
     - hosts: localhost
       vars:
-        openbao_addr: "http://localhost:8200"
-        openbao_auth_method: "token"
-        openbao_token: "test-root-token"
-        openbao_tls_verify: false
-        openbao_secrets:
+        openbao_secrets_integration_bao_addr: "http://localhost:8200"
+        openbao_secrets_integration_bao_auth_method: "token"
+        openbao_secrets_integration_bao_token: "test-root-token"
+        openbao_secrets_integration_bao_tls_verify: false
+        openbao_secrets_integration_bao_secrets:
           - path: "secret/data/myapp/db"
             key: "password"
             dest_var: "db_password"
@@ -218,12 +218,12 @@ make test-scenario SCENARIO=userpass-auth
 
 ```yaml
 # group_vars/production.yml
-openbao_addr: "https://openbao.prod.example.com:8200"
-openbao_auth_method: "approle"
-openbao_role_id: "{{ lookup('env', 'PROD_ROLE_ID') }}"
-openbao_secret_id: "{{ lookup('env', 'PROD_SECRET_ID') }}"
-openbao_rotate_secrets: true
-openbao_secrets:
+openbao_secrets_integration_bao_addr: "https://openbao.prod.example.com:8200"
+openbao_secrets_integration_bao_auth_method: "approle"
+openbao_secrets_integration_bao_role_id: "{{ lookup('env', 'PROD_ROLE_ID') }}"
+openbao_secrets_integration_bao_secret_id: "{{ lookup('env', 'PROD_SECRET_ID') }}"
+openbao_secrets_integration_bao_rotate_secrets: true
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/prod/webapp/db"
     key: "password"
     dest_var: "prod_db_password"
@@ -232,7 +232,7 @@ openbao_secrets:
 ### Multiple Secrets
 
 ```yaml
-openbao_secrets:
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/app/database"
     key: "password"
     dest_var: "db_password"
@@ -247,8 +247,8 @@ openbao_secrets:
 ### With Secret Rotation
 
 ```yaml
-openbao_rotate_secrets: true  # Enable rotation
-openbao_secrets:
+openbao_secrets_integration_bao_rotate_secrets: true  # Enable rotation
+openbao_secrets_integration_bao_secrets:
   - path: "database/creds/admin"
     key: "password"
     dest_var: "db_admin_password"
@@ -258,17 +258,17 @@ openbao_secrets:
 
 ### Required Variables
 
-- `openbao_addr`: OpenBao server URL
-- `openbao_auth_method`: Authentication method
-- `openbao_secrets`: List of secrets to retrieve
+- `openbao_secrets_integration_bao_addr`: OpenBao server URL
+- `openbao_secrets_integration_bao_auth_method`: Authentication method
+- `openbao_secrets_integration_bao_secrets`: List of secrets to retrieve
 
 ### Optional Variables
 
-- `openbao_rotate_secrets`: Enable/disable rotation (default: false)
-- `openbao_tls_verify`: TLS verification (default: true)
-- `openbao_timeout`: Connection timeout (default: 30)
+- `openbao_secrets_integration_bao_rotate_secrets`: Enable/disable rotation (default: false)
+- `openbao_secrets_integration_bao_tls_verify`: TLS verification (default: true)
+- `openbao_secrets_integration_timeout`: Connection timeout (default: 30)
 - `openbao_secrets_integration_max_retries`: Retry attempts (default: 3)
-- `openbao_namespace`: OpenBao namespace (Enterprise)
+- `openbao_secrets_integration_bao_namespace`: OpenBao namespace (Enterprise)
 
 ## Testing Coverage
 

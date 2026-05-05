@@ -6,19 +6,19 @@
   tasks:
     - name: Wait for OpenBao to be ready
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/sys/health"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/sys/health"
         method: GET
         validate_certs: false
         status_code: [200, 429, 472, 473, 501, 503]
-      register: health_check
+      register: openbao_secrets_integration_bao_health_check
       retries: 30
       delay: 2
-      until: health_check.status in [200, 429, 473]
+      until: openbao_secrets_integration_bao_health_check.status in [200, 429, 473]
       when: "'openbao-server' not in inventory_hostname"
 
     - name: Setup test secrets in OpenBao
       ansible.builtin.uri:
-        url: "{{ openbao_addr }}/v1/secret/data/test/{{ item.name }}"
+        url: "{{ openbao_secrets_integration_bao_addr }}/v1/secret/data/test/{{ item.name }}"
         method: POST
         body_format: json
         body:
@@ -40,7 +40,7 @@
 
     - name: Include openbao role
       ansible.builtin.include_role:
-        name: openbao
+        name: openbao_secrets_integration
       when: "'openbao-server' not in inventory_hostname"
 
     - name: Verify secrets were retrieved

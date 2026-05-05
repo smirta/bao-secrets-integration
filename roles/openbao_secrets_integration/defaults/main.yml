@@ -2,59 +2,59 @@
 # Default variables for OpenBao role
 
 # OpenBao server address (required)
-openbao_addr: ""
+openbao_secrets_integration_bao_addr: ""
 
 # Authentication method: token, userpass, approle, kubernetes, ldap, jwt
-openbao_auth_method: "token"
+openbao_secrets_integration_bao_auth_method: "token"
 
 # API version
-openbao_api_version: "v1"
+openbao_secrets_integration_bao_api_version: "v1"
 
 # TLS verification
-openbao_tls_verify: true
+openbao_secrets_integration_bao_tls_verify: true
 
 # CA certificate path (optional)
-openbao_ca_cert: ""
+openbao_secrets_integration_ca_cert: ""
 
 # Namespace (for OpenBao Enterprise)
-openbao_namespace: ""
+openbao_secrets_integration_bao_namespace: ""
 
 # Enable/disable secret rotation on each run
-openbao_rotate_secrets: false
+openbao_secrets_integration_bao_rotate_secrets: false
 
 # Secrets to retrieve (list of dicts with path, key, dest_var)
-openbao_secrets: []
+openbao_secrets_integration_bao_secrets: []
 
 # Token authentication
-openbao_token: ""
+openbao_secrets_integration_bao_token: ""
 
 # Userpass authentication
-openbao_username: ""
-openbao_password: ""
+openbao_secrets_integration_bao_username: ""
+openbao_secrets_integration_bao_password: ""
 
 # AppRole authentication
-openbao_role_id: ""
-openbao_secret_id: ""
+openbao_secrets_integration_bao_role_id: ""
+openbao_secrets_integration_bao_secret_id: ""
 
 # Kubernetes authentication
-openbao_k8s_role: ""
-openbao_k8s_jwt_path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+openbao_secrets_integration_k8s_role: ""
+openbao_secrets_integration_k8s_jwt_path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
 
 # LDAP authentication
-openbao_ldap_username: ""
-openbao_ldap_password: ""
+openbao_secrets_integration_ldap_username: ""
+openbao_secrets_integration_ldap_password: ""
 
 # JWT authentication
-openbao_jwt_role: ""
-openbao_jwt_token: ""
+openbao_secrets_integration_jwt_role: ""
+openbao_secrets_integration_jwt_token: ""
 
 # Python package installation
-openbao_install_hvac: true
-openbao_hvac_version: "2.1.0"
+openbao_secrets_integration_install_hvac: true
+openbao_secrets_integration_hvac_version: "2.1.0"
 
 # Connection timeout
-openbao_timeout: 30
+openbao_secrets_integration_timeout: 30
 
 # Retry settings
-openbao_max_retries: 3
-openbao_retry_delay: 2
+openbao_secrets_integration_max_retries: 3
+openbao_secrets_integration_retry_delay: 2

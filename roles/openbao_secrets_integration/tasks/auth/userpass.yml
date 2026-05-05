@@ -4,33 +4,33 @@
 - name: Validate userpass credentials
   ansible.builtin.assert:
     that:
-      - openbao_username is defined
-      - openbao_username | length > 0
-      - openbao_password is defined
-      - openbao_password | length > 0
+      - openbao_secrets_integration_bao_username is defined
+      - openbao_secrets_integration_bao_username | length > 0
+      - openbao_secrets_integration_bao_password is defined
+      - openbao_secrets_integration_bao_password | length > 0
     fail_msg: "Username and password must be provided for userpass authentication"
 
 - name: Authenticate with userpass
   ansible.builtin.uri:
-    url: "{{ openbao_addr }}/v1/auth/userpass/login/{{ openbao_username }}"
+    url: "{{ openbao_secrets_integration_bao_addr }}/v1/auth/userpass/login/{{ openbao_secrets_integration_bao_username }}"
     method: POST
     body_format: json
     body:
-      password: "{{ openbao_password }}"
+      password: "{{ openbao_secrets_integration_bao_password }}"
     headers:
-      X-Vault-Namespace: "{{ openbao_namespace | default(omit) }}"
-    validate_certs: "{{ openbao_tls_verify }}"
-    timeout: "{{ openbao_timeout }}"
+      X-Vault-Namespace: "{{ openbao_secrets_integration_bao_namespace | default(omit) }}"
+    validate_certs: "{{ openbao_secrets_integration_bao_tls_verify }}"
+    timeout: "{{ openbao_secrets_integration_timeout }}"
     status_code: 200
-  register: userpass_login
+  register: openbao_secrets_integration_userpass_login
   no_log: true
 
 - name: Set OpenBao client token from userpass
   ansible.builtin.set_fact:
-    openbao_client_token: "{{ userpass_login.json.auth.client_token }}"
+    openbao_secrets_integration_bao_client_token: "{{ openbao_secrets_integration_userpass_login.json.auth.client_token }}"
     cacheable: no
   no_log: true
 
 - name: Display userpass authentication info
   ansible.builtin.debug:
-    msg: "Successfully authenticated user {{ openbao_username }} via userpass"
+    msg: "Successfully authenticated user {{ openbao_secrets_integration_bao_username }} via userpass"

@@ -4,9 +4,9 @@
 - name: Validate required variables
   ansible.builtin.assert:
     that:
-      - openbao_addr is defined
-      - openbao_addr | length > 0
-      - openbao_auth_method in ['token', 'userpass', 'approle', 'kubernetes', 'ldap', 'jwt']
+      - openbao_secrets_integration_bao_addr is defined
+      - openbao_secrets_integration_bao_addr | length > 0
+      - openbao_secrets_integration_bao_auth_method in ['token', 'userpass', 'approle', 'kubernetes', 'ldap', 'jwt']
     fail_msg: "OpenBao address and valid auth method must be defined"
     success_msg: "Required variables validated"
 
@@ -20,17 +20,17 @@
 
 - name: Install dependencies
   ansible.builtin.include_tasks: install.yml
-  when: openbao_install_hvac | bool
+  when: openbao_secrets_integration_install_hvac | bool
 
 - name: Authenticate to OpenBao
-  ansible.builtin.include_tasks: "auth/{{ openbao_auth_method }}.yml"
+  ansible.builtin.include_tasks: "auth/{{ openbao_secrets_integration_bao_auth_method }}.yml"
 
 - name: Retrieve secrets
   ansible.builtin.include_tasks: retrieve_secrets.yml
-  when: openbao_secrets | length > 0
+  when: openbao_secrets_integration_bao_secrets | length > 0
 
 - name: Rotate secrets if enabled
   ansible.builtin.include_tasks: rotate_secrets.yml
   when:
-    - openbao_rotate_secrets | bool
-    - openbao_secrets | length > 0
+    - openbao_secrets_integration_bao_rotate_secrets | bool
+    - openbao_secrets_integration_bao_secrets | length > 0

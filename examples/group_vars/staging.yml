@@ -2,19 +2,19 @@
 # group_vars/staging.yml
 # OpenBao configuration for staging environment
 
-openbao_addr: "https://openbao-staging.company.com:8200"
-openbao_auth_method: "userpass"
-openbao_tls_verify: true
+openbao_secrets_integration_bao_addr: "https://openbao-staging.company.com:8200"
+openbao_secrets_integration_bao_auth_method: "userpass"
+openbao_secrets_integration_bao_tls_verify: true
 
 # Disable secret rotation in staging
-openbao_rotate_secrets: false
+openbao_secrets_integration_bao_rotate_secrets: false
 
 # Userpass credentials (should be stored in Ansible Vault)
-openbao_secrets_integration_username: "{{ lookup('env', 'STAGING_OPENBAO_USER') }}"
-openbao_secrets_integration_password: "{{ lookup('env', 'STAGING_OPENBAO_PASS') }}"
+openbao_secrets_integration_bao_username: "{{ lookup('env', 'STAGING_OPENBAO_USER') }}"
+openbao_secrets_integration_bao_password: "{{ lookup('env', 'STAGING_OPENBAO_PASS') }}"
 
 # Staging secrets to retrieve
-openbao_secrets:
+openbao_secrets_integration_bao_secrets:
   - path: "secret/data/staging/webapp/database"
     key: "password"
     dest_var: "staging_db_password"
@@ -32,4 +32,4 @@ openbao_secrets:
     dest_var: "stripe_test_api_key"
 
 # Connection settings
-openbao_timeout: 20
+openbao_secrets_integration_timeout: 20

@@ -89,7 +89,7 @@ dev-openbao: ## Start OpenBao dev server in Docker
 		-p 8200:8200 \
 		-e VAULT_DEV_ROOT_TOKEN_ID=test-root-token \
 		-e VAULT_ADDR=http://0.0.0.0:8200 \
-		openbao/openbao:latest server -dev -dev-listen-address=0.0.0.0:8200
+		openbao/openbao:latest bao server -dev -dev-listen-address=0.0.0.0:8200
 	@echo "OpenBao dev server started!"
 	@echo "  Address: http://localhost:8200"
 	@echo "  Token: test-root-token"

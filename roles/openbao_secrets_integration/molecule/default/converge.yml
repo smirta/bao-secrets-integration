@@ -1,0 +1,62 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Wait for OpenBao to be ready
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/health"
+        method: GET
+        validate_certs: false
+        status_code: [200, 429, 472, 473, 501, 503]
+      register: health_check
+      retries: 30
+      delay: 2
+      until: health_check.status in [200, 429, 473]
+      when: "'openbao-server' not in inventory_hostname"
+
+    - name: Setup test secrets in OpenBao
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/secret/data/test/{{ item.name }}"
+        method: POST
+        body_format: json
+        body:
+          data: "{{ item.data }}"
+        headers:
+          X-Vault-Token: test-token
+        validate_certs: false
+        status_code: [200, 204]
+      loop:
+        - name: config
+          data:
+            password: "supersecret123"
+            database: "mydb"
+        - name: api
+          data:
+            token: "api-token-xyz789"
+            endpoint: "https://api.example.com"
+      when: "'openbao-server' not in inventory_hostname"
+
+    - name: Include openbao role
+      ansible.builtin.include_role:
+        name: openbao
+      when: "'openbao-server' not in inventory_hostname"
+
+    - name: Verify secrets were retrieved
+      ansible.builtin.assert:
+        that:
+          - test_password is defined
+          - test_password == "supersecret123"
+          - api_token is defined
+          - api_token == "api-token-xyz789"
+        fail_msg: "Secrets were not retrieved correctly"
+        success_msg: "All secrets retrieved successfully"
+      when: "'openbao-server' not in inventory_hostname"
+
+    - name: Display retrieved secret variables
+      ansible.builtin.debug:
+        msg:
+          - "test_password is set: {{ test_password is defined }}"
+          - "api_token is set: {{ api_token is defined }}"
+      when: "'openbao-server' not in inventory_hostname"

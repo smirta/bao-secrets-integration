@@ -58,7 +58,6 @@ tmp/
 temp/
 
 # Secrets (never commit!)
-*secret*
 *password*
 *token*
 .env

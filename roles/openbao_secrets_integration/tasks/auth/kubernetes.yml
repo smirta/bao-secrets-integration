@@ -1,0 +1,51 @@
+---
+# Kubernetes authentication
+
+- name: Validate Kubernetes auth parameters
+  ansible.builtin.assert:
+    that:
+      - openbao_k8s_role is defined
+      - openbao_k8s_role | length > 0
+    fail_msg: "Kubernetes role must be provided for Kubernetes authentication"
+
+- name: Check if running in Kubernetes
+  ansible.builtin.stat:
+    path: "{{ openbao_k8s_jwt_path }}"
+  register: k8s_jwt_file
+
+- name: Fail if not running in Kubernetes
+  ansible.builtin.fail:
+    msg: "JWT token file not found at {{ openbao_k8s_jwt_path }}. Not running in Kubernetes?"
+  when: not k8s_jwt_file.stat.exists
+
+- name: Read Kubernetes service account JWT
+  ansible.builtin.slurp:
+    src: "{{ openbao_k8s_jwt_path }}"
+  register: k8s_jwt_content
+  no_log: true
+
+- name: Authenticate with Kubernetes
+  ansible.builtin.uri:
+    url: "{{ openbao_addr }}/v1/auth/kubernetes/login"
+    method: POST
+    body_format: json
+    body:
+      role: "{{ openbao_k8s_role }}"
+      jwt: "{{ k8s_jwt_content.content | b64decode }}"
+    headers:
+      X-Vault-Namespace: "{{ openbao_namespace | default(omit) }}"
+    validate_certs: "{{ openbao_tls_verify }}"
+    timeout: "{{ openbao_timeout }}"
+    status_code: 200
+  register: k8s_login
+  no_log: true
+
+- name: Set OpenBao client token from Kubernetes
+  ansible.builtin.set_fact:
+    openbao_client_token: "{{ k8s_login.json.auth.client_token }}"
+    cacheable: no
+  no_log: true
+
+- name: Display Kubernetes authentication info
+  ansible.builtin.debug:
+    msg: "Successfully authenticated via Kubernetes with role {{ openbao_k8s_role }}"

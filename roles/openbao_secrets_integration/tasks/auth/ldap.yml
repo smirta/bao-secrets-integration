@@ -1,0 +1,36 @@
+---
+# LDAP authentication
+
+- name: Validate LDAP credentials
+  ansible.builtin.assert:
+    that:
+      - openbao_ldap_username is defined
+      - openbao_ldap_username | length > 0
+      - openbao_ldap_password is defined
+      - openbao_ldap_password | length > 0
+    fail_msg: "LDAP username and password must be provided for LDAP authentication"
+
+- name: Authenticate with LDAP
+  ansible.builtin.uri:
+    url: "{{ openbao_addr }}/v1/auth/ldap/login/{{ openbao_ldap_username }}"
+    method: POST
+    body_format: json
+    body:
+      password: "{{ openbao_ldap_password }}"
+    headers:
+      X-Vault-Namespace: "{{ openbao_namespace | default(omit) }}"
+    validate_certs: "{{ openbao_tls_verify }}"
+    timeout: "{{ openbao_timeout }}"
+    status_code: 200
+  register: ldap_login
+  no_log: true
+
+- name: Set OpenBao client token from LDAP
+  ansible.builtin.set_fact:
+    openbao_client_token: "{{ ldap_login.json.auth.client_token }}"
+    cacheable: no
+  no_log: true
+
+- name: Display LDAP authentication info
+  ansible.builtin.debug:
+    msg: "Successfully authenticated user {{ openbao_ldap_username }} via LDAP"

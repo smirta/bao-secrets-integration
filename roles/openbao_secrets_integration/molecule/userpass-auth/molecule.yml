@@ -1,0 +1,47 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ubuntu-userpass
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: openbao-userpass
+
+  - name: openbao-userpass-server
+    image: openbao/openbao:latest
+    command: server -dev -dev-root-token-id=root-token -dev-listen-address=0.0.0.0:8200
+    env:
+      VAULT_DEV_ROOT_TOKEN_ID: root-token
+      VAULT_ADDR: http://0.0.0.0:8200
+    networks:
+      - name: openbao-userpass
+    pre_build_image: true
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      ubuntu-userpass:
+        openbao_addr: http://openbao-userpass-server:8200
+        openbao_auth_method: userpass
+        openbao_username: testuser
+        openbao_password: testpass123
+        openbao_tls_verify: false
+        openbao_secrets:
+          - path: secret/data/app/config
+            key: db_password
+            dest_var: database_password
+
+verifier:
+  name: ansible
+
+scenario:
+  name: userpass-auth

@@ -1,0 +1,37 @@
+---
+# JWT authentication
+
+- name: Validate JWT auth parameters
+  ansible.builtin.assert:
+    that:
+      - openbao_jwt_role is defined
+      - openbao_jwt_role | length > 0
+      - openbao_jwt_token is defined
+      - openbao_jwt_token | length > 0
+    fail_msg: "JWT role and token must be provided for JWT authentication"
+
+- name: Authenticate with JWT
+  ansible.builtin.uri:
+    url: "{{ openbao_addr }}/v1/auth/jwt/login"
+    method: POST
+    body_format: json
+    body:
+      role: "{{ openbao_jwt_role }}"
+      jwt: "{{ openbao_jwt_token }}"
+    headers:
+      X-Vault-Namespace: "{{ openbao_namespace | default(omit) }}"
+    validate_certs: "{{ openbao_tls_verify }}"
+    timeout: "{{ openbao_timeout }}"
+    status_code: 200
+  register: jwt_login
+  no_log: true
+
+- name: Set OpenBao client token from JWT
+  ansible.builtin.set_fact:
+    openbao_client_token: "{{ jwt_login.json.auth.client_token }}"
+    cacheable: no
+  no_log: true
+
+- name: Display JWT authentication info
+  ansible.builtin.debug:
+    msg: "Successfully authenticated via JWT with role {{ openbao_jwt_role }}"

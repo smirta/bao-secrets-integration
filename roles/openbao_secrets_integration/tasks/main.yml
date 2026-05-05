@@ -1,0 +1,36 @@
+---
+# Main tasks for OpenBao role
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - openbao_addr is defined
+      - openbao_addr | length > 0
+      - openbao_auth_method in ['token', 'userpass', 'approle', 'kubernetes', 'ldap', 'jwt']
+    fail_msg: "OpenBao address and valid auth method must be defined"
+    success_msg: "Required variables validated"
+
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+    - "default.yml"
+
+- name: Install dependencies
+  ansible.builtin.include_tasks: install.yml
+  when: openbao_install_hvac | bool
+
+- name: Authenticate to OpenBao
+  ansible.builtin.include_tasks: "auth/{{ openbao_auth_method }}.yml"
+
+- name: Retrieve secrets
+  ansible.builtin.include_tasks: retrieve_secrets.yml
+  when: openbao_secrets | length > 0
+
+- name: Rotate secrets if enabled
+  ansible.builtin.include_tasks: rotate_secrets.yml
+  when: 
+    - openbao_rotate_secrets | bool
+    - openbao_secrets | length > 0

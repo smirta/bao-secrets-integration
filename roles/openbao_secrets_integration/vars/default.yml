@@ -1,0 +1,3 @@
+---
+# Default OS-specific variables
+python_pip_package: python3-pip

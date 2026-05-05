@@ -1,0 +1,73 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Wait for OpenBao to be ready
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/health"
+        method: GET
+        validate_certs: false
+        status_code: [200, 429, 472, 473, 501, 503]
+      register: health_check
+      retries: 30
+      delay: 2
+      until: health_check.status in [200, 429, 473]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Enable userpass auth method
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/auth/userpass"
+        method: POST
+        body_format: json
+        body:
+          type: userpass
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+      failed_when: false
+
+    - name: Create test user
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/auth/userpass/users/testuser"
+        method: POST
+        body_format: json
+        body:
+          password: testpass123
+          policies: ["default"]
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Create test secret
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/secret/data/app/config"
+        method: POST
+        body_format: json
+        body:
+          data:
+            db_password: "userpass-secret-password"
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Include openbao role with userpass auth
+      ansible.builtin.include_role:
+        name: openbao
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Verify secret was retrieved
+      ansible.builtin.assert:
+        that:
+          - database_password is defined
+          - database_password == "userpass-secret-password"
+        fail_msg: "Userpass authentication or secret retrieval failed"
+        success_msg: "Userpass authentication successful"
+      when: "'openbao' not in inventory_hostname"

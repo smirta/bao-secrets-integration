@@ -18,15 +18,15 @@ openbao_secrets:
   - path: "secret/data/staging/webapp/database"
     key: "password"
     dest_var: "staging_db_password"
-  
+
   - path: "secret/data/staging/webapp/database"
     key: "connection_string"
     dest_var: "staging_db_connection"
-  
+
   - path: "secret/data/staging/webapp/redis"
     key: "password"
     dest_var: "staging_redis_password"
-  
+
   - path: "secret/data/staging/external/stripe"
     key: "test_api_key"
     dest_var: "stripe_test_api_key"

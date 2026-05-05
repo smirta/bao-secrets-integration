@@ -80,7 +80,7 @@ Create `playbook.yml`:
 - name: Get secrets from OpenBao
   hosts: localhost
   connection: local
-  
+
   vars:
     openbao_addr: "http://localhost:8200"
     openbao_auth_method: "token"
@@ -90,10 +90,10 @@ Create `playbook.yml`:
       - path: "secret/data/myapp/db"
         key: "password"
         dest_var: "database_password"
-  
+
   roles:
     - role: openbao
-  
+
   tasks:
     - name: Use the secret
       debug:
@@ -198,10 +198,10 @@ ansible-playbook -i inventory/production deploy.yml
       - path: "database/creds/readonly"
         key: "password"
         dest_var: "db_ro_password"
-  
+
   roles:
     - openbao
-  
+
   tasks:
     - name: Update database connection
       # The password will be rotated on each run

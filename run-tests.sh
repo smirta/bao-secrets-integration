@@ -38,9 +38,9 @@ print_header() {
 run_test() {
     local test_name=$1
     local test_command=$2
-    
+
     print_message "$YELLOW" "Running: $test_name"
-    
+
     if eval "$test_command"; then
         print_message "$GREEN" "✓ PASSED: $test_name"
         ((PASSED_TESTS++))
@@ -55,9 +55,9 @@ run_test() {
 # Check prerequisites
 check_prerequisites() {
     print_header "Checking Prerequisites"
-    
+
     local missing_deps=0
-    
+
     # Check Python
     if command -v python3 &> /dev/null; then
         print_message "$GREEN" "✓ Python3 installed: $(python3 --version)"
@@ -65,7 +65,7 @@ check_prerequisites() {
         print_message "$RED" "✗ Python3 not found"
         ((missing_deps++))
     fi
-    
+
     # Check Ansible
     if command -v ansible &> /dev/null; then
         print_message "$GREEN" "✓ Ansible installed: $(ansible --version | head -n1)"
@@ -73,7 +73,7 @@ check_prerequisites() {
         print_message "$RED" "✗ Ansible not found"
         ((missing_deps++))
     fi
-    
+
     # Check Docker
     if command -v docker &> /dev/null; then
         print_message "$GREEN" "✓ Docker installed: $(docker --version)"
@@ -81,7 +81,7 @@ check_prerequisites() {
         print_message "$RED" "✗ Docker not found"
         ((missing_deps++))
     fi
-    
+
     # Check Molecule
     if command -v molecule &> /dev/null; then
         print_message "$GREEN" "✓ Molecule installed: $(molecule --version)"
@@ -89,20 +89,20 @@ check_prerequisites() {
         print_message "$YELLOW" "⚠ Molecule not found (install with: pip install molecule molecule-docker)"
         ((missing_deps++))
     fi
-    
+
     if [ $missing_deps -gt 0 ]; then
         print_message "$RED" "Missing $missing_deps required dependencies"
         print_message "$YELLOW" "Install with: make install"
         exit 1
     fi
-    
+
     print_message "$GREEN" "All prerequisites satisfied!"
 }
 
 # Run linting tests
 run_linting() {
     print_header "Running Linting Tests"
-    
+
     # YAML linting
     if command -v yamllint &> /dev/null; then
         run_test "YAML Lint" "yamllint ." || true
@@ -110,7 +110,7 @@ run_linting() {
         print_message "$YELLOW" "⚠ SKIPPED: yamllint (not installed)"
         ((SKIPPED_TESTS++))
     fi
-    
+
     # Ansible linting
     if command -v ansible-lint &> /dev/null; then
         run_test "Ansible Lint" "ansible-lint roles/openbao" || true
@@ -123,34 +123,34 @@ run_linting() {
 # Run Molecule tests
 run_molecule_tests() {
     print_header "Running Molecule Tests"
-    
+
     if ! command -v molecule &> /dev/null; then
         print_message "$YELLOW" "⚠ SKIPPED: Molecule tests (molecule not installed)"
         ((SKIPPED_TESTS+=4))
         return
     fi
-    
+
     cd roles/openbao
-    
+
     # Default scenario
     run_test "Molecule - Default (Token Auth)" "molecule test -s default" || true
-    
+
     # Userpass scenario
     run_test "Molecule - Userpass Auth" "molecule test -s userpass-auth" || true
-    
+
     # AppRole scenario
     run_test "Molecule - AppRole Auth" "molecule test -s approle-auth" || true
-    
+
     # Rotation scenario
     run_test "Molecule - Secret Rotation" "molecule test -s rotation" || true
-    
+
     cd ../..
 }
 
 # Run integration tests
 run_integration_tests() {
     print_header "Running Integration Tests"
-    
+
     # Check if OpenBao is running
     if curl -s http://localhost:8200/v1/sys/health > /dev/null 2>&1; then
         print_message "$GREEN" "OpenBao server detected at localhost:8200"
@@ -165,16 +165,16 @@ run_integration_tests() {
 # Print test summary
 print_summary() {
     print_header "Test Summary"
-    
+
     local total_tests=$((PASSED_TESTS + FAILED_TESTS + SKIPPED_TESTS))
-    
+
     print_message "$BLUE" "Total Tests:   $total_tests"
     print_message "$GREEN" "Passed:        $PASSED_TESTS"
     print_message "$RED" "Failed:        $FAILED_TESTS"
     print_message "$YELLOW" "Skipped:       $SKIPPED_TESTS"
-    
+
     echo ""
-    
+
     if [ $FAILED_TESTS -eq 0 ]; then
         print_message "$GREEN" "=========================================="
         print_message "$GREEN" "  ALL TESTS PASSED! ✓"
@@ -191,15 +191,15 @@ print_summary() {
 # Main execution
 main() {
     local start_time=$(date +%s)
-    
+
     print_header "OpenBao Ansible Role Test Suite"
     print_message "$BLUE" "Started at: $(date)"
-    
+
     # Parse arguments
     RUN_LINT=true
     RUN_MOLECULE=true
     RUN_INTEGRATION=true
-    
+
     while [[ $# -gt 0 ]]; do
         case $1 in
             --lint-only)
@@ -248,30 +248,30 @@ main() {
                 ;;
         esac
     done
-    
+
     # Run test suites
     check_prerequisites
-    
+
     if [ "$RUN_LINT" = true ]; then
         run_linting
     fi
-    
+
     if [ "$RUN_MOLECULE" = true ]; then
         run_molecule_tests
     fi
-    
+
     if [ "$RUN_INTEGRATION" = true ]; then
         run_integration_tests
     fi
-    
+
     # Calculate duration
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
-    
+
     echo ""
     print_message "$BLUE" "Completed at: $(date)"
     print_message "$BLUE" "Duration: ${duration}s"
-    
+
     # Print summary and exit with appropriate code
     print_summary
 }

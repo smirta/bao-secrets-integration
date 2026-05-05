@@ -17,7 +17,7 @@ openbao_secrets:
   - path: "secret/data/dev/webapp/database"
     key: "password"
     dest_var: "dev_db_password"
-  
+
   - path: "secret/data/dev/webapp/api"
     key: "key"
     dest_var: "dev_api_key"

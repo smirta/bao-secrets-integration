@@ -15,7 +15,7 @@
       - path: "secret/data/test/app"
         key: "password"
         dest_var: "test_app_password"
-  
+
   pre_tasks:
     - name: Check if OpenBao is running
       ansible.builtin.uri:
@@ -25,11 +25,11 @@
         status_code: [200, 429, 473, 501, 503]
       register: openbao_health
       failed_when: false
-    
+
     - name: Skip if OpenBao not available
       ansible.builtin.meta: end_play
       when: openbao_health.status == -1
-    
+
     - name: Create test secret
       ansible.builtin.uri:
         url: "{{ openbao_addr }}/v1/secret/data/test/app"
@@ -42,10 +42,10 @@
           X-Vault-Token: "{{ openbao_token }}"
         validate_certs: false
         status_code: [200, 204]
-  
+
   roles:
     - role: openbao
-  
+
   post_tasks:
     - name: Verify secret retrieval
       ansible.builtin.assert:
@@ -69,7 +69,7 @@
       - path: "secret/data/test/rotation"
         key: "value"
         dest_var: "rotated_value"
-  
+
   pre_tasks:
     - name: Create rotation test secret
       ansible.builtin.uri:
@@ -84,10 +84,10 @@
         validate_certs: false
         status_code: [200, 204]
       failed_when: false
-  
+
   roles:
     - role: openbao
-  
+
   post_tasks:
     - name: Verify rotation test
       ansible.builtin.assert:
@@ -115,7 +115,7 @@
       - path: "secret/data/test/multi3"
         key: "key3"
         dest_var: "multi_secret_3"
-  
+
   pre_tasks:
     - name: Create multiple test secrets
       ansible.builtin.uri:
@@ -130,16 +130,16 @@
         status_code: [200, 204]
       loop:
         - path: "secret/data/test/multi1"
-          data: { key1: "value1" }
+          data: {key1: "value1"}
         - path: "secret/data/test/multi2"
-          data: { key2: "value2" }
+          data: {key2: "value2"}
         - path: "secret/data/test/multi3"
-          data: { key3: "value3" }
+          data: {key3: "value3"}
       failed_when: false
-  
+
   roles:
     - role: openbao
-  
+
   post_tasks:
     - name: Verify multiple secrets
       ansible.builtin.assert:
@@ -152,7 +152,7 @@
           - multi_secret_3 == "value3"
         success_msg: "Multiple secrets test PASSED"
         fail_msg: "Multiple secrets test FAILED"
-    
+
     - name: Display test summary
       ansible.builtin.debug:
         msg: "All integration tests completed successfully!"

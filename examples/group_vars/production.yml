@@ -19,23 +19,23 @@ openbao_secrets:
   - path: "secret/data/production/webapp/database"
     key: "password"
     dest_var: "prod_db_password"
-  
+
   - path: "secret/data/production/webapp/database"
     key: "connection_string"
     dest_var: "prod_db_connection"
-  
+
   - path: "secret/data/production/webapp/redis"
     key: "password"
     dest_var: "prod_redis_password"
-  
+
   - path: "secret/data/production/external/stripe"
     key: "api_key"
     dest_var: "stripe_api_key"
-  
+
   - path: "secret/data/production/external/sendgrid"
     key: "api_key"
     dest_var: "sendgrid_api_key"
-  
+
   - path: "secret/data/production/webapp/jwt"
     key: "secret_key"
     dest_var: "jwt_secret_key"

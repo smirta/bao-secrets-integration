@@ -275,7 +275,7 @@ make test-integration
           - path: "secret/data/webapp/redis"
             key: "password"
             dest_var: "redis_password"
-    
+
     - role: webapp
       vars:
         db_connection: "postgresql://user:{{ db_password }}@localhost/db"
@@ -296,7 +296,7 @@ make test-integration
           - path: "database/creds/admin"
             key: "password"
             dest_var: "db_admin_pass"
-    
+
     - role: postgresql
       vars:
         admin_password: "{{ db_admin_pass }}"
@@ -319,7 +319,7 @@ make test-integration
           - path: "secret/data/ci/docker"
             key: "registry_token"
             dest_var: "docker_token"
-    
+
     - role: docker_deploy
 ```
 

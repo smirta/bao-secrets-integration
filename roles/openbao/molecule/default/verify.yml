@@ -2,7 +2,7 @@
 - name: Verify
   hosts: all
   gather_facts: false
-  
+
   tasks:
     - name: Check that secrets are available as variables
       ansible.builtin.assert:

@@ -17,7 +17,7 @@
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
     - "default.yml"
-  
+
 - name: Install dependencies
   ansible.builtin.include_tasks: install.yml
   when: openbao_install_hvac | bool

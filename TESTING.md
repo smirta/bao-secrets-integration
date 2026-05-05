@@ -260,14 +260,14 @@ Add new test plays to `tests/integration-test.yml`:
   vars:
     openbao_addr: "http://localhost:8200"
     # ... other vars ...
-  
+
   pre_tasks:
     - name: Setup
       # ... setup tasks ...
-  
+
   roles:
     - role: openbao
-  
+
   post_tasks:
     - name: Verify
       assert:

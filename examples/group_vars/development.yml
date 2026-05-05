@@ -24,4 +24,4 @@ openbao_secrets:
 
 # Relaxed connection settings for dev
 openbao_timeout: 10
-openbao_max_retries: 2
+openbao_secrets_integration_max_retries: 2

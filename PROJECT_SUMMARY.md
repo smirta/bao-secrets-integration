@@ -108,7 +108,7 @@ bao-secrets-integration/
 │       └── ci.yml                  # GitHub Actions CI pipeline
 │
 ├── roles/
-│   └── openbao/
+│   └── openbao_secrets_integration/
 │       ├── defaults/
 │       │   └── main.yml           # Default variables
 │       ├── meta/
@@ -171,33 +171,33 @@ make install
 
 1. Start OpenBao dev server:
 
-```bash
-make dev-openbao
-```
+    ```bash
+    make dev-openbao
+    ```
 
 2. Create a playbook:
 
-```yaml
----
-- hosts: localhost
-  vars:
-    openbao_addr: "http://localhost:8200"
-    openbao_auth_method: "token"
-    openbao_token: "test-root-token"
-    openbao_tls_verify: false
-    openbao_secrets:
-      - path: "secret/data/myapp/db"
-        key: "password"
-        dest_var: "db_password"
-  roles:
-    - openbao
-```
+    ```yaml
+    ---
+    - hosts: localhost
+      vars:
+        openbao_addr: "http://localhost:8200"
+        openbao_auth_method: "token"
+        openbao_token: "test-root-token"
+        openbao_tls_verify: false
+        openbao_secrets:
+          - path: "secret/data/myapp/db"
+            key: "password"
+            dest_var: "db_password"
+      roles:
+        - openbao_secrets_integration
+    ```
 
 3. Run the playbook:
 
-```bash
-ansible-playbook playbook.yml
-```
+    ```bash
+    ansible-playbook playbook.yml
+    ```
 
 ### Running Tests
 
@@ -267,7 +267,7 @@ openbao_secrets:
 - `openbao_rotate_secrets`: Enable/disable rotation (default: false)
 - `openbao_tls_verify`: TLS verification (default: true)
 - `openbao_timeout`: Connection timeout (default: 30)
-- `openbao_max_retries`: Retry attempts (default: 3)
+- `openbao_secrets_integration_max_retries`: Retry attempts (default: 3)
 - `openbao_namespace`: OpenBao namespace (Enterprise)
 
 ## Testing Coverage

@@ -48,8 +48,8 @@ openbao_token: "hvs.CAESIJ..."
 #### Userpass Authentication
 
 ```yaml
-openbao_username: "myuser"
-openbao_password: "mypassword"
+openbao_secrets_integration_username: "myuser"
+openbao_secrets_integration_password: "mypassword"
 ```
 
 #### AppRole Authentication
@@ -62,22 +62,22 @@ openbao_secret_id: "secret-id-here"
 #### Kubernetes Authentication
 
 ```yaml
-openbao_k8s_role: "my-role"
-openbao_k8s_jwt_path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+openbao_secrets_integration_k8s_role: "my-role"
+openbao_secrets_integration_k8s_jwt_path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
 ```
 
 #### LDAP Authentication
 
 ```yaml
-openbao_ldap_username: "ldapuser"
-openbao_ldap_password: "ldappassword"
+openbao_secrets_integration_ldap_username: "ldapuser"
+openbao_secrets_integration_ldap_password: "ldappassword"
 ```
 
 #### JWT Authentication
 
 ```yaml
-openbao_jwt_role: "my-jwt-role"
-openbao_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+openbao_secrets_integration_jwt_role: "my-jwt-role"
+openbao_secrets_integration_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 ### Optional Variables
@@ -109,7 +109,7 @@ None
 ---
 - hosts: webservers
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
       vars:
         openbao_addr: "https://openbao.example.com:8200"
         openbao_auth_method: "approle"
@@ -169,7 +169,7 @@ This role includes comprehensive tests using Molecule with Docker.
 pip install molecule molecule-docker ansible-lint yamllint
 
 # Run all tests
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule test
 
 # Run specific scenarios

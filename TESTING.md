@@ -40,7 +40,7 @@ Validates YAML syntax and Ansible best practices.
 yamllint .
 
 # Ansible linting
-ansible-lint roles/openbao
+ansible-lint roles/openbao_secrets_integration
 
 # Or use make
 make lint
@@ -96,7 +96,7 @@ make test-integration
 ### Using Molecule Directly
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 
 # Full test cycle
 molecule test
@@ -131,7 +131,7 @@ ansible-playbook --check example-playbook.yml
 Tests basic token authentication and secret retrieval.
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule test -s default
 ```
 
@@ -147,7 +147,7 @@ molecule test -s default
 Tests username/password authentication.
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule test -s userpass-auth
 ```
 
@@ -162,7 +162,7 @@ molecule test -s userpass-auth
 Tests AppRole authentication for automated workflows.
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule test -s approle-auth
 ```
 
@@ -178,7 +178,7 @@ molecule test -s approle-auth
 Tests secret rotation functionality.
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule test -s rotation
 ```
 
@@ -196,7 +196,7 @@ molecule test -s rotation
 1. Create scenario directory:
 
     ```bash
-    mkdir -p roles/openbao/molecule/new-scenario
+    mkdir -p roles/openbao_secrets_integration/molecule/new-scenario
     ```
 
 2. Create `molecule.yml`:
@@ -266,7 +266,7 @@ Add new test plays to `tests/integration-test.yml`:
       # ... setup tasks ...
 
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
 
   post_tasks:
     - name: Verify
@@ -281,7 +281,7 @@ Add new test plays to `tests/integration-test.yml`:
 
 ```bash
 # Create and converge without destroying
-cd roles/openbao
+cd roles/openbao_secrets_integration
 molecule converge
 
 # Login to test instance
@@ -412,7 +412,7 @@ For performance testing:
 
 ```bash
 # Run with timing
-cd roles/openbao
+cd roles/openbao_secrets_integration
 time molecule test
 
 # Enable profiling

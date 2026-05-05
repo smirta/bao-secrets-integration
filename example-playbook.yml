@@ -30,7 +30,7 @@
 
   roles:
     # First, get secrets from OpenBao
-    - role: openbao
+    - role: openbao_secrets_integration
 
     # Then use the secrets in subsequent roles
     - role: database_setup

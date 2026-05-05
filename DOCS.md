@@ -17,7 +17,7 @@ Complete documentation for the OpenBao Secrets Integration Ansible Role.
 
 ### Configuration
 
-- [Default Variables](roles/openbao/defaults/main.yml) - All configurable options
+- [Default Variables](roles/openbao_secrets_integration/defaults/main.yml) - All configurable options
 - [Authentication Methods](#authentication-methods) - Supported auth methods
 - [Secret Management](#secret-management) - Retrieving and rotating secrets
 
@@ -46,7 +46,7 @@ openbao_token: "hvs.CAESIJ..."
 - Quick testing
 - Service accounts with long-lived tokens
 
-**See:** [Token Auth Tasks](roles/openbao/tasks/auth/token.yml)
+**See:** [Token Auth Tasks](roles/openbao_secrets_integration/tasks/auth/token.yml)
 
 #### AppRole Authentication
 
@@ -65,7 +65,7 @@ openbao_secret_id: "secret-id-here"
 - CI/CD pipelines
 - Applications
 
-**See:** [AppRole Auth Tasks](roles/openbao/tasks/auth/approle.yml)
+**See:** [AppRole Auth Tasks](roles/openbao_secrets_integration/tasks/auth/approle.yml)
 
 #### Username/Password Authentication
 
@@ -73,8 +73,8 @@ Traditional username and password authentication.
 
 ```yaml
 openbao_auth_method: "userpass"
-openbao_username: "myuser"
-openbao_password: "mypassword"
+openbao_secrets_integration_username: "myuser"
+openbao_secrets_integration_password: "mypassword"
 ```
 
 **Use Cases:**
@@ -83,7 +83,7 @@ openbao_password: "mypassword"
 - Development/testing
 - Interactive sessions
 
-**See:** [Userpass Auth Tasks](roles/openbao/tasks/auth/userpass.yml)
+**See:** [Userpass Auth Tasks](roles/openbao_secrets_integration/tasks/auth/userpass.yml)
 
 #### Kubernetes Authentication
 
@@ -91,7 +91,7 @@ For applications running in Kubernetes clusters.
 
 ```yaml
 openbao_auth_method: "kubernetes"
-openbao_k8s_role: "my-role"
+openbao_secrets_integration_k8s_role: "my-role"
 ```
 
 **Use Cases:**
@@ -100,7 +100,7 @@ openbao_k8s_role: "my-role"
 - Pod-based authentication
 - Container orchestration
 
-**See:** [Kubernetes Auth Tasks](roles/openbao/tasks/auth/kubernetes.yml)
+**See:** [Kubernetes Auth Tasks](roles/openbao_secrets_integration/tasks/auth/kubernetes.yml)
 
 #### LDAP Authentication
 
@@ -108,8 +108,8 @@ Integrate with existing LDAP/Active Directory.
 
 ```yaml
 openbao_auth_method: "ldap"
-openbao_ldap_username: "ldapuser"
-openbao_ldap_password: "ldappassword"
+openbao_secrets_integration_ldap_username: "ldapuser"
+openbao_secrets_integration_ldap_password: "ldappassword"
 ```
 
 **Use Cases:**
@@ -118,7 +118,7 @@ openbao_ldap_password: "ldappassword"
 - Existing LDAP infrastructure
 - Centralized user management
 
-**See:** [LDAP Auth Tasks](roles/openbao/tasks/auth/ldap.yml)
+**See:** [LDAP Auth Tasks](roles/openbao_secrets_integration/tasks/auth/ldap.yml)
 
 #### JWT Authentication
 
@@ -126,8 +126,8 @@ Token-based authentication using JSON Web Tokens.
 
 ```yaml
 openbao_auth_method: "jwt"
-openbao_jwt_role: "my-jwt-role"
-openbao_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+openbao_secrets_integration_jwt_role: "my-jwt-role"
+openbao_secrets_integration_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 **Use Cases:**
@@ -136,7 +136,7 @@ openbao_jwt_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 - External authentication systems
 - Service mesh integration
 
-**See:** [JWT Auth Tasks](roles/openbao/tasks/auth/jwt.yml)
+**See:** [JWT Auth Tasks](roles/openbao_secrets_integration/tasks/auth/jwt.yml)
 
 ### Secret Management
 
@@ -162,7 +162,7 @@ After the role runs, secrets are available as variables:
     msg: "DB Password: {{ database_password }}"
 ```
 
-**See:** [Secret Retrieval Tasks](roles/openbao/tasks/retrieve_secrets.yml)
+**See:** [Secret Retrieval Tasks](roles/openbao_secrets_integration/tasks/retrieve_secrets.yml)
 
 #### Secret Rotation
 
@@ -174,7 +174,7 @@ openbao_rotate_secrets: true
 
 When enabled, the role will attempt to rotate secrets on each run.
 
-**See:** [Secret Rotation Tasks](roles/openbao/tasks/rotate_secrets.yml)
+**See:** [Secret Rotation Tasks](roles/openbao_secrets_integration/tasks/rotate_secrets.yml)
 
 #### Secret Metadata
 
@@ -202,7 +202,7 @@ openbao_ca_cert: "/path/to/ca.crt"
 
 # Timeout and retries
 openbao_timeout: 30
-openbao_max_retries: 3
+openbao_secrets_integration_max_retries: 3
 openbao_retry_delay: 2
 
 # Namespace (Enterprise)
@@ -213,8 +213,8 @@ openbao_namespace: "admin"
 
 ```yaml
 # Install hvac library automatically
-openbao_install_hvac: true
-openbao_hvac_version: "2.1.0"
+openbao_secrets_integration_install_hvac: true
+openbao_secrets_integration_hvac_version: "2.1.0"
 ```
 
 ## Testing
@@ -227,10 +227,10 @@ make test
 
 ### Test Scenarios
 
-1. **[Default Test](roles/openbao/molecule/default/)** - Token authentication
-2. **[Userpass Test](roles/openbao/molecule/userpass-auth/)** - Username/password auth
-3. **[AppRole Test](roles/openbao/molecule/approle-auth/)** - AppRole auth
-4. **[Rotation Test](roles/openbao/molecule/rotation/)** - Secret rotation
+1. **[Default Test](roles/openbao_secrets_integration/molecule/default/)** - Token authentication
+2. **[Userpass Test](roles/openbao_secrets_integration/molecule/userpass-auth/)** - Username/password auth
+3. **[AppRole Test](roles/openbao_secrets_integration/molecule/approle-auth/)** - AppRole auth
+4. **[Rotation Test](roles/openbao_secrets_integration/molecule/rotation/)** - Secret rotation
 
 ### Running Tests
 
@@ -266,7 +266,7 @@ make test-integration
 ---
 - hosts: webservers
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
       vars:
         openbao_secrets:
           - path: "secret/data/webapp/db"
@@ -290,7 +290,7 @@ make test-integration
   vars:
     openbao_rotate_secrets: true
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
       vars:
         openbao_secrets:
           - path: "database/creds/admin"
@@ -313,7 +313,7 @@ make test-integration
     openbao_role_id: "{{ lookup('env', 'CI_ROLE_ID') }}"
     openbao_secret_id: "{{ lookup('env', 'CI_SECRET_ID') }}"
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
       vars:
         openbao_secrets:
           - path: "secret/data/ci/docker"
@@ -393,15 +393,15 @@ Check what the role is doing:
 | `openbao_tls_verify` | No | `true` | Verify TLS certificates |
 | `openbao_timeout` | No | `30` | Connection timeout (seconds) |
 
-**See:** [defaults/main.yml](roles/openbao/defaults/main.yml) for complete list
+**See:** [defaults/main.yml](roles/openbao_secrets_integration/defaults/main.yml) for complete list
 
 ### Task Files
 
-- [main.yml](roles/openbao/tasks/main.yml) - Main entry point
-- [install.yml](roles/openbao/tasks/install.yml) - Dependency installation
-- [retrieve_secrets.yml](roles/openbao/tasks/retrieve_secrets.yml) - Secret retrieval
-- [rotate_secrets.yml](roles/openbao/tasks/rotate_secrets.yml) - Secret rotation
-- [auth/](roles/openbao/tasks/auth/) - Authentication methods
+- [main.yml](roles/openbao_secrets_integration/tasks/main.yml) - Main entry point
+- [install.yml](roles/openbao_secrets_integration/tasks/install.yml) - Dependency installation
+- [retrieve_secrets.yml](roles/openbao_secrets_integration/tasks/retrieve_secrets.yml) - Secret retrieval
+- [rotate_secrets.yml](roles/openbao_secrets_integration/tasks/rotate_secrets.yml) - Secret rotation
+- [auth/](roles/openbao_secrets_integration/tasks/auth/) - Authentication methods
 
 ## Additional Resources
 

@@ -113,7 +113,7 @@ run_linting() {
 
     # Ansible linting
     if command -v ansible-lint &> /dev/null; then
-        run_test "Ansible Lint" "ansible-lint roles/openbao" || true
+        run_test "Ansible Lint" "ansible-lint roles/openbao_secrets_integration" || true
     else
         print_message "$YELLOW" "⚠ SKIPPED: ansible-lint (not installed)"
         ((SKIPPED_TESTS++))
@@ -130,7 +130,7 @@ run_molecule_tests() {
         return
     fi
 
-    cd roles/openbao
+    cd roles/openbao_secrets_integration
 
     # Default scenario
     run_test "Molecule - Default (Token Auth)" "molecule test -s default" || true

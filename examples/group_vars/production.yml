@@ -42,4 +42,4 @@ openbao_secrets:
 
 # Connection settings
 openbao_timeout: 30
-openbao_max_retries: 5
+openbao_secrets_integration_max_retries: 5

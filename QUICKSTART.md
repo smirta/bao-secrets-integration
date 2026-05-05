@@ -14,7 +14,7 @@ Get up and running with the OpenBao Secrets Integration Ansible role in minutes!
 ### Option 1: Ansible Galaxy (Recommended)
 
 ```bash
-ansible-galaxy role install openbao
+ansible-galaxy role install openbao_secrets_integration
 ```
 
 ### Option 2: Git Clone
@@ -31,7 +31,7 @@ Add to `requirements.yml`:
 ```yaml
 ---
 roles:
-  - name: openbao
+  - name: openbao_secrets_integration
     src: https://github.com/smirta/bao-secrets-integration.git
     version: main
 ```
@@ -92,7 +92,7 @@ Create `playbook.yml`:
         dest_var: "database_password"
 
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
 
   tasks:
     - name: Use the secret
@@ -109,10 +109,10 @@ ansible-playbook playbook.yml
 **Expected Output:**
 
 ```bash
-TASK [openbao : Authenticate to OpenBao] ***************
+TASK [openbao_secrets_integration : Authenticate to OpenBao] ***************
 ok: [localhost]
 
-TASK [openbao : Retrieve secrets] **********************
+TASK [openbao_secrets_integration : Retrieve secrets] **********************
 ok: [localhost]
 
 TASK [Use the secret] ***********************************
@@ -145,7 +145,7 @@ openbao_secrets:
 ---
 - hosts: webservers
   roles:
-    - openbao
+    - openbao_secrets_integration
     - deploy_app
 ```
 
@@ -200,7 +200,7 @@ ansible-playbook -i inventory/production deploy.yml
         dest_var: "db_ro_password"
 
   roles:
-    - openbao
+    - openbao_secrets_integration
 
   tasks:
     - name: Update database connection
@@ -231,15 +231,15 @@ openbao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
 
 ```yaml
 openbao_auth_method: "userpass"
-openbao_username: "ansible-user"
-openbao_password: "{{ lookup('env', 'OPENBAO_PASSWORD') }}"
+openbao_secrets_integration_username: "ansible-user"
+openbao_secrets_integration_password: "{{ lookup('env', 'OPENBAO_PASSWORD') }}"
 ```
 
 ### Kubernetes (for K8s deployments)
 
 ```yaml
 openbao_auth_method: "kubernetes"
-openbao_k8s_role: "my-app-role"
+openbao_secrets_integration_k8s_role: "my-app-role"
 ```
 
 ## Next Steps
@@ -334,7 +334,7 @@ Check the `examples/` directory for more:
 
 ```bash
 # Install
-ansible-galaxy install openbao
+ansible-galaxy install openbao_secrets_integration
 
 # Run playbook
 ansible-playbook playbook.yml
@@ -349,7 +349,7 @@ ansible-playbook --check playbook.yml
 ansible-playbook --ask-vault-pass playbook.yml
 
 # Test the role
-cd roles/openbao && molecule test
+cd roles/openbao_secrets_integration && molecule test
 ```
 
 Happy automating! 🚀

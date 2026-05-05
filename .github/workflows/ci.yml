@@ -33,7 +33,7 @@ jobs:
         run: yamllint .
 
       - name: Run ansible-lint
-        run: ansible-lint roles/openbao
+        run: ansible-lint roles/openbao_secrets_integration
 
   molecule:
     name: Molecule Test - ${{ matrix.scenario }}
@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Molecule test
         run: |
-          cd roles/openbao
+          cd roles/openbao_secrets_integration
           molecule test -s ${{ matrix.scenario }}
         env:
           PY_COLORS: '1'

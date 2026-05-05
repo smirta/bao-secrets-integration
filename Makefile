@@ -17,17 +17,17 @@ lint: ## Run linting checks
 	@echo "Running yamllint..."
 	yamllint .
 	@echo "Running ansible-lint..."
-	ansible-lint roles/openbao
+	ansible-lint roles/openbao_secrets_integration
 	@echo "Linting complete!"
 
 test: ## Run default molecule test
 	@echo "Running Molecule tests (default scenario)..."
-	cd roles/openbao && molecule test
+	cd roles/openbao_secrets_integration && molecule test
 	@echo "Tests complete!"
 
 test-all: ## Run all molecule scenarios
 	@echo "Running all Molecule test scenarios..."
-	cd roles/openbao && \
+	cd roles/openbao_secrets_integration && \
 		molecule test -s default && \
 		molecule test -s userpass-auth && \
 		molecule test -s approle-auth && \
@@ -46,21 +46,21 @@ test-scenario: ## Run specific molecule scenario (usage: make test-scenario SCEN
 		exit 1; \
 	fi
 	@echo "Running Molecule test scenario: $(SCENARIO)..."
-	cd roles/openbao && molecule test -s $(SCENARIO)
+	cd roles/openbao_secrets_integration && molecule test -s $(SCENARIO)
 
 verify: ## Run verifier only (no destroy)
 	@echo "Running verification..."
-	cd roles/openbao && molecule verify
+	cd roles/openbao_secrets_integration && molecule verify
 	@echo "Verification complete!"
 
 converge: ## Run converge only (no destroy, useful for debugging)
 	@echo "Running converge..."
-	cd roles/openbao && molecule converge
+	cd roles/openbao_secrets_integration && molecule converge
 	@echo "Converge complete!"
 
 destroy: ## Destroy molecule test environment
 	@echo "Destroying test environment..."
-	cd roles/openbao && molecule destroy
+	cd roles/openbao_secrets_integration && molecule destroy
 	@echo "Environment destroyed!"
 
 clean: ## Clean up test artifacts and caches
@@ -69,7 +69,7 @@ clean: ## Clean up test artifacts and caches
 	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	cd roles/openbao && molecule destroy 2>/dev/null || true
+	cd roles/openbao_secrets_integration && molecule destroy 2>/dev/null || true
 	@echo "Cleanup complete!"
 
 format: ## Format YAML files (requires prettier)

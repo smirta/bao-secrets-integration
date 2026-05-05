@@ -44,7 +44,7 @@
         status_code: [200, 204]
 
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
 
   post_tasks:
     - name: Verify secret retrieval
@@ -86,7 +86,7 @@
       failed_when: false
 
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
 
   post_tasks:
     - name: Verify rotation test
@@ -138,7 +138,7 @@
       failed_when: false
 
   roles:
-    - role: openbao
+    - role: openbao_secrets_integration
 
   post_tasks:
     - name: Verify multiple secrets

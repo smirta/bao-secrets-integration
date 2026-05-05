@@ -37,7 +37,7 @@ Run linting checks before committing:
 yamllint .
 
 # Ansible linting
-ansible-lint roles/openbao
+ansible-lint roles/openbao_secrets_integration
 ```
 
 ### Unit Tests with Molecule
@@ -45,7 +45,7 @@ ansible-lint roles/openbao
 Test individual scenarios:
 
 ```bash
-cd roles/openbao
+cd roles/openbao_secrets_integration
 
 # Test default scenario (token auth)
 molecule test
@@ -95,7 +95,7 @@ docker stop openbao-dev && docker rm openbao-dev
 
 ### Adding a New Authentication Method
 
-1. Create auth task file: `roles/openbao/tasks/auth/newmethod.yml`
+1. Create auth task file: `roles/openbao_secrets_integration/tasks/auth/newmethod.yml`
 2. Add validation for required variables
 3. Implement authentication logic
 4. Update `defaults/main.yml` with new variables

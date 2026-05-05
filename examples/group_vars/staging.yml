@@ -10,8 +10,8 @@ openbao_tls_verify: true
 openbao_rotate_secrets: false
 
 # Userpass credentials (should be stored in Ansible Vault)
-openbao_username: "{{ lookup('env', 'STAGING_OPENBAO_USER') }}"
-openbao_password: "{{ lookup('env', 'STAGING_OPENBAO_PASS') }}"
+openbao_secrets_integration_username: "{{ lookup('env', 'STAGING_OPENBAO_USER') }}"
+openbao_secrets_integration_password: "{{ lookup('env', 'STAGING_OPENBAO_PASS') }}"
 
 # Staging secrets to retrieve
 openbao_secrets:

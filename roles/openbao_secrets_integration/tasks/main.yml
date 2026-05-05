@@ -31,6 +31,6 @@
 
 - name: Rotate secrets if enabled
   ansible.builtin.include_tasks: rotate_secrets.yml
-  when: 
+  when:
     - openbao_rotate_secrets | bool
     - openbao_secrets | length > 0

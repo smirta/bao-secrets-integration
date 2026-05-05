@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu-userpass
-    image: geerlingguy/docker-ubuntu2204-ansible:latest
+  - name: alpine-userpass
+    image: alpine/ansible:latest
     command: ""
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
@@ -29,7 +29,7 @@ provisioner:
   name: ansible
   inventory:
     host_vars:
-      ubuntu-userpass:
+      alpine-userpass:
         openbao_secrets_integration_bao_addr: http://openbao-userpass-server:8200
         openbao_secrets_integration_bao_auth_method: userpass
         openbao_secrets_integration_bao_username: testuser

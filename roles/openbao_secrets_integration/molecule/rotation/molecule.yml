@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: alpine-rotation
-    image: alpine/ansible:latest
+  - name: almalinux-rotation
+    image: almalinux:latest
     command: ""
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
@@ -29,7 +29,7 @@ provisioner:
   name: ansible
   inventory:
     host_vars:
-      alpine-rotation:
+      almalinux-rotation:
         openbao_secrets_integration_bao_addr: http://openbao-server:8200
         openbao_secrets_integration_bao_auth_method: token
         openbao_secrets_integration_bao_token: root-token

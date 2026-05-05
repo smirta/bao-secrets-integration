@@ -1,12 +1,4 @@
 ---
-- name: Prepare OpenBao Server
-  hosts: openbao-server
-  gather_facts: false  # Must be false because Python isn't there yet!
-  tasks:
-    - name: Bootstrap python3 on OpenBao container
-      raw: apk add --no-cache python3
-      become: true
-
 - name: Prepare
   hosts: all
   gather_facts: false

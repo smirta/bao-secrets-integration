@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: alpine-approle
-    image: alpine/ansible:latest
+  - name: almalinux-approle
+    image: almalinux:latest
     command: ""
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
@@ -29,7 +29,7 @@ provisioner:
   name: ansible
   inventory:
     host_vars:
-      alpine-approle:
+      almalinux-approle:
         openbao_secrets_integration_bao_addr: http://openbao-server:8200
         openbao_secrets_integration_bao_auth_method: approle
         openbao_secrets_integration_bao_role_id: test-role-id

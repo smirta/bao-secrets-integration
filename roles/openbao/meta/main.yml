@@ -1,0 +1,41 @@
+---
+galaxy_info:
+  role_name: openbao
+  author: Ansible OpenBao Integration
+  description: Authenticate against OpenBao and retrieve secrets
+  license: AGPL-3.0
+  min_ansible_version: "2.9"
+  
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - kinetic
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+        - trixie
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+        - "10"
+    - name: Fedora
+      versions:
+        - "38"
+        - "39"
+        - "40"
+        - "41"
+        - "42"
+        - "43"
+
+  galaxy_tags:
+    - openbao
+    - vault
+    - secrets
+    - security
+    - authentication
+
+dependencies: []

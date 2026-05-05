@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  
+  tasks:
+    - name: Wait for systems to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 30

@@ -1,0 +1,29 @@
+---
+# Ansible-lint configuration
+
+profile: production
+
+exclude_paths:
+  - .cache/
+  - .github/
+  - molecule/
+  - tests/
+
+warn_list:
+  - experimental
+  - no-changed-when
+  - no-handler
+
+skip_list:
+  - yaml[line-length]
+
+# Enable specific rules
+enable_list:
+  - args
+  - empty-string-compare
+  - no-log-password
+  - no-same-owner
+
+# Use modern ansible syntax
+use_default_rules: true
+parseable: true

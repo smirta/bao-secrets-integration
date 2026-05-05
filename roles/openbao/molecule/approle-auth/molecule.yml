@@ -1,0 +1,47 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ubuntu-approle
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: openbao-approle
+  
+  - name: openbao-approle-server
+    image: openbao/openbao:latest
+    command: server -dev -dev-root-token-id=root-token -dev-listen-address=0.0.0.0:8200
+    env:
+      VAULT_DEV_ROOT_TOKEN_ID: root-token
+      VAULT_ADDR: http://0.0.0.0:8200
+    networks:
+      - name: openbao-approle
+    pre_build_image: true
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      ubuntu-approle:
+        openbao_addr: http://openbao-approle-server:8200
+        openbao_auth_method: approle
+        openbao_role_id: test-role-id
+        openbao_secret_id: test-secret-id
+        openbao_tls_verify: false
+        openbao_secrets:
+          - path: secret/data/prod/api
+            key: api_key
+            dest_var: production_api_key
+
+verifier:
+  name: ansible
+
+scenario:
+  name: approle-auth

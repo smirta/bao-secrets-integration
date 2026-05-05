@@ -1,0 +1,57 @@
+---
+# Example playbook demonstrating OpenBao role usage
+
+- name: Deploy application with OpenBao secrets
+  hosts: webservers
+  become: yes
+  
+  vars:
+    # OpenBao configuration
+    openbao_addr: "https://openbao.example.com:8200"
+    openbao_auth_method: "approle"
+    openbao_role_id: "{{ lookup('env', 'OPENBAO_ROLE_ID') }}"
+    openbao_secret_id: "{{ lookup('env', 'OPENBAO_SECRET_ID') }}"
+    openbao_rotate_secrets: false
+    
+    # Secrets to retrieve
+    openbao_secrets:
+      - path: "secret/data/myapp/database"
+        key: "password"
+        dest_var: "db_password"
+      - path: "secret/data/myapp/database"
+        key: "username"
+        dest_var: "db_username"
+      - path: "secret/data/myapp/api"
+        key: "api_key"
+        dest_var: "external_api_key"
+      - path: "secret/data/myapp/certificates"
+        key: "tls_cert"
+        dest_var: "app_tls_cert"
+
+  roles:
+    # First, get secrets from OpenBao
+    - role: openbao
+    
+    # Then use the secrets in subsequent roles
+    - role: database_setup
+      vars:
+        database_password: "{{ db_password }}"
+        database_user: "{{ db_username }}"
+    
+    - role: api_configuration
+      vars:
+        api_key: "{{ external_api_key }}"
+    
+    - role: tls_setup
+      vars:
+        certificate: "{{ app_tls_cert }}"
+
+  tasks:
+    - name: Display secret metadata (without exposing values)
+      ansible.builtin.debug:
+        msg: "Retrieved {{ openbao_secrets | length }} secrets from OpenBao"
+        
+    - name: Show secret versions
+      ansible.builtin.debug:
+        var: openbao_secret_metadata
+      when: openbao_secret_metadata is defined

@@ -1,0 +1,111 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run tests weekly
+    - cron: '0 0 * * 0'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint yamllint
+      
+      - name: Run yamllint
+        run: yamllint .
+      
+      - name: Run ansible-lint
+        run: ansible-lint roles/openbao
+
+  molecule:
+    name: Molecule Test - ${{ matrix.scenario }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - default
+          - userpass-auth
+          - approle-auth
+          - rotation
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Molecule test
+        run: |
+          cd roles/openbao
+          molecule test -s ${{ matrix.scenario }}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      openbao:
+        image: openbao/openbao:latest
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: test-root-token
+          VAULT_ADDR: http://0.0.0.0:8200
+        ports:
+          - 8200:8200
+        options: >-
+          --health-cmd "vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible hvac
+      
+      - name: Wait for OpenBao
+        run: |
+          timeout 30 bash -c 'until curl -s http://localhost:8200/v1/sys/health; do sleep 1; done'
+      
+      - name: Run integration tests
+        run: ansible-playbook tests/integration-test.yml
+        env:
+          ANSIBLE_FORCE_COLOR: '1'

@@ -1,0 +1,108 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  
+  tasks:
+    - name: Wait for OpenBao to be ready
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/health"
+        method: GET
+        validate_certs: false
+        status_code: [200, 429, 472, 473, 501, 503]
+      register: health_check
+      retries: 30
+      delay: 2
+      until: health_check.status in [200, 429, 473]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Enable approle auth method
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/auth/approle"
+        method: POST
+        body_format: json
+        body:
+          type: approle
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+      failed_when: false
+
+    - name: Create AppRole role
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/auth/approle/role/test-role"
+        method: POST
+        body_format: json
+        body:
+          token_policies: ["default"]
+          bind_secret_id: true
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Get role ID
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/auth/approle/role/test-role/role-id"
+        method: GET
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+      register: role_id_response
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Create custom role ID
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/auth/approle/role/test-role/role-id"
+        method: POST
+        body_format: json
+        body:
+          role_id: test-role-id
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Generate secret ID
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/auth/approle/role/test-role/secret-id"
+        method: POST
+        body_format: json
+        body:
+          secret_id: test-secret-id
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Create test secret
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/secret/data/prod/api"
+        method: POST
+        body_format: json
+        body:
+          data:
+            api_key: "approle-api-key-xyz"
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Include openbao role with AppRole auth
+      ansible.builtin.include_role:
+        name: openbao
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Verify secret was retrieved
+      ansible.builtin.assert:
+        that:
+          - production_api_key is defined
+          - production_api_key == "approle-api-key-xyz"
+        fail_msg: "AppRole authentication or secret retrieval failed"
+        success_msg: "AppRole authentication successful"
+      when: "'openbao' not in inventory_hostname"

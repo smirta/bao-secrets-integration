@@ -1,0 +1,78 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  
+  tasks:
+    - name: Wait for OpenBao to be ready
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/sys/health"
+        method: GET
+        validate_certs: false
+        status_code: [200, 429, 472, 473, 501, 503]
+      register: health_check
+      retries: 30
+      delay: 2
+      until: health_check.status in [200, 429, 473]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Create initial secret
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/secret/data/rotatable/password"
+        method: POST
+        body_format: json
+        body:
+          data:
+            value: "initial-password-v1"
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: First run - retrieve secret
+      ansible.builtin.include_role:
+        name: openbao
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Store first password value
+      ansible.builtin.set_fact:
+        first_password: "{{ rotatable_password }}"
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Update secret (simulating rotation)
+      ansible.builtin.uri:
+        url: "{{ openbao_addr }}/v1/secret/data/rotatable/password"
+        method: POST
+        body_format: json
+        body:
+          data:
+            value: "rotated-password-v2"
+        headers:
+          X-Vault-Token: root-token
+        validate_certs: false
+        status_code: [200, 204]
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Second run - retrieve rotated secret
+      ansible.builtin.include_role:
+        name: openbao
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Verify rotation worked
+      ansible.builtin.assert:
+        that:
+          - first_password == "initial-password-v1"
+          - rotatable_password == "rotated-password-v2"
+          - first_password != rotatable_password
+        fail_msg: "Secret rotation verification failed"
+        success_msg: "Secret rotation working correctly"
+      when: "'openbao' not in inventory_hostname"
+
+    - name: Display rotation results
+      ansible.builtin.debug:
+        msg:
+          - "First password: {{ first_password }}"
+          - "Rotated password: {{ rotatable_password }}"
+          - "Rotation enabled: {{ openbao_rotate_secrets }}"
+      when: "'openbao' not in inventory_hostname"

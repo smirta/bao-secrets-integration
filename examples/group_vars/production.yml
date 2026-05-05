@@ -1,0 +1,45 @@
+---
+# group_vars/production.yml
+# OpenBao configuration for production environment
+
+openbao_addr: "https://openbao-prod.company.com:8200"
+openbao_auth_method: "approle"
+openbao_tls_verify: true
+openbao_ca_cert: "/etc/ssl/certs/company-ca.crt"
+
+# Enable secret rotation in production
+openbao_rotate_secrets: true
+
+# AppRole credentials (should be stored in Ansible Vault or env vars)
+openbao_role_id: "{{ lookup('env', 'PROD_OPENBAO_ROLE_ID') }}"
+openbao_secret_id: "{{ lookup('env', 'PROD_OPENBAO_SECRET_ID') }}"
+
+# Production secrets to retrieve
+openbao_secrets:
+  - path: "secret/data/production/webapp/database"
+    key: "password"
+    dest_var: "prod_db_password"
+  
+  - path: "secret/data/production/webapp/database"
+    key: "connection_string"
+    dest_var: "prod_db_connection"
+  
+  - path: "secret/data/production/webapp/redis"
+    key: "password"
+    dest_var: "prod_redis_password"
+  
+  - path: "secret/data/production/external/stripe"
+    key: "api_key"
+    dest_var: "stripe_api_key"
+  
+  - path: "secret/data/production/external/sendgrid"
+    key: "api_key"
+    dest_var: "sendgrid_api_key"
+  
+  - path: "secret/data/production/webapp/jwt"
+    key: "secret_key"
+    dest_var: "jwt_secret_key"
+
+# Connection settings
+openbao_timeout: 30
+openbao_max_retries: 5

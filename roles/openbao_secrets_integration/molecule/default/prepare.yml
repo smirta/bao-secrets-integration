@@ -10,7 +10,6 @@
 
 - name: Install openbao-server dependencies
   hosts: openbao-server
-  become: true
   gather_facts: false
 
   tasks:
@@ -27,6 +26,9 @@
   tasks:
     - name: Start OpenBao server
       ansible.builtin.shell: |
-         bao server -dev -dev-root-token-id=test-token -dev-listen-address=0.0.0.0:8200
+         bao server \
+         -dev \
+         -dev-root-token-id=test-token \
+         -dev-listen-address=0.0.0.0:8200
       async: 0
       poll: 0

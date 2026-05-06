@@ -16,6 +16,7 @@
     - name: Install OpenBao serverdependencies
       ansible.builtin.package:
         name:
+          - epel-release
           - openbao
         state: present
 

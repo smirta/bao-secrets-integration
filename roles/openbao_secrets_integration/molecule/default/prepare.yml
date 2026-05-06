@@ -12,10 +12,22 @@
   hosts: openbao-server
   become: true
   gather_facts: false
-  
+
   tasks:
-    - name: Install dependencies
+    - name: Install OpenBao serverdependencies
       ansible.builtin.package:
         name:
           - openbao
         state: present
+
+- name: Start openbao-server
+  hosts: openbao-server
+  gather_facts: false
+
+  tasks:
+    - name: Start OpenBao server
+      ansible.builtin.shell: |
+         nohup bao server -dev -dev-root-token-id=test-token -dev-listen-address=0.0.0.0:8200
+      async: 0
+      poll: 0
+      

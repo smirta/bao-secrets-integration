@@ -17,7 +17,6 @@ platforms:
 
   - name: openbao-server
     image: almalinux:latest
-    command: bao server -dev -dev-root-token-id=root-token -dev-listen-address=0.0.0.0:8200
     env:
       VAULT_DEV_ROOT_TOKEN_ID: root-token
       VAULT_ADDR: http://0.0.0.0:8200

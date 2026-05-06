@@ -17,7 +17,6 @@ platforms:
 
   - name: openbao-server
     image: almalinux:latest
-    command: bao server -dev -dev-root-token-id=test-token -dev-listen-address=0.0.0.0:8200
     published_ports:
       - "8200:8200"
     env:

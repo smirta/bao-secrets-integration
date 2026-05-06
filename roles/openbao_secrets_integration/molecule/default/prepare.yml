@@ -13,6 +13,11 @@
   gather_facts: false
 
   tasks:
+    - name: Import EPEL GPG key
+      ansible.builtin.rpm_key:
+        key: |
+        "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+      state: present
     - name: Install OpenBao
       ansible.builtin.dnf:
         name:

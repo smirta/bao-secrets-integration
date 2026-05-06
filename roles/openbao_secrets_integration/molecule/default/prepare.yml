@@ -7,3 +7,15 @@
     - name: Wait for systems to become reachable
       ansible.builtin.wait_for_connection:
         timeout: 30
+
+- name: Install openbao-server dependencies
+  hosts: openbao-server
+  become: true
+  gather_facts: false
+  
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.package:
+        name:
+          - openbao
+        state: present

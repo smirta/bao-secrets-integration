@@ -40,6 +40,8 @@ provisioner:
           - path: secret/data/test/api
             key: token
             dest_var: api_token
+  env:
+    ANSIBLE_ROLES_PATH: /home/runner/work/bao-secrets-integration/bao-secrets-integration/roles
 
 verifier:
   name: ansible

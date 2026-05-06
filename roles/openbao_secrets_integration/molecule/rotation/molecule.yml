@@ -38,6 +38,8 @@ provisioner:
           - path: secret/data/rotatable/password
             key: value
             dest_var: rotatable_password
+  env:
+    ANSIBLE_ROLES_PATH: /home/runner/work/bao-secrets-integration/bao-secrets-integration/roles
 
 verifier:
   name: ansible

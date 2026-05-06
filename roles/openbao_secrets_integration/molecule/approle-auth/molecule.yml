@@ -38,6 +38,8 @@ provisioner:
           - path: secret/data/prod/api
             key: api_key
             dest_var: production_api_key
+  env:
+    ANSIBLE_ROLES_PATH: /home/runner/work/bao-secrets-integration/bao-secrets-integration/roles
 
 verifier:
   name: ansible

@@ -4,7 +4,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: almalinux-openbao
+  - name: almalinux-default
     image: almalinux:latest
     pre_build_image: true
     networks:
@@ -28,7 +28,7 @@ provisioner:
       callbacks_enabled: ansible.posix.profile_tasks
   inventory:
     host_vars:
-      almalinux-openbao:
+      almalinux-default:
         openbao_secrets_integration_bao_addr: http://openbao-server:8200
         openbao_secrets_integration_bao_auth_method: token
         openbao_secrets_integration_bao_token: test-token

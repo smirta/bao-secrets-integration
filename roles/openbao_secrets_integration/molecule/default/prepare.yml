@@ -13,11 +13,13 @@
   gather_facts: false
 
   tasks:
-    - name: Install OpenBao serverdependencies
-      ansible.builtin.package:
+    - name: Install OpenBao
+      ansible.builtin.dnf:
         name:
           - epel-release
           - openbao
+        disable_gpg_check: true
+        update_cache: true
         state: present
 
 - name: Start openbao-server
